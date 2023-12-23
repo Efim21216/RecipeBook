@@ -1,0 +1,1 @@
+java -jar D:\Projects\ReciepBook\backend\recipeBook\target\recipeBook-0.0.1-SNAPSHOT.jar
