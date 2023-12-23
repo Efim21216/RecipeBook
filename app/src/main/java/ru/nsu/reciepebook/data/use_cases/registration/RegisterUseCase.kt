@@ -1,6 +1,5 @@
 package ru.nsu.reciepebook.data.use_cases.registration
 
-import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.data.model.AuthResponse

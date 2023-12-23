@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ru.nsu.reciepebook.data.model.User
-import ru.nsu.reciepebook.data.use_cases.start.AuthenticateUseCase
 import ru.nsu.reciepebook.data.use_cases.registration.RegisterUseCase
 import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.state.TextFieldState

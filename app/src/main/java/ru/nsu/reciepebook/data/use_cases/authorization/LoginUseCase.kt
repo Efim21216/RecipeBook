@@ -1,12 +1,10 @@
 package ru.nsu.reciepebook.data.use_cases.authorization
 
-import android.content.SharedPreferences
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.data.model.AuthResponse
 import ru.nsu.reciepebook.data.model.User
 import ru.nsu.reciepebook.data.repository.MainRepository
-import ru.nsu.reciepebook.util.Constants
 import ru.nsu.reciepebook.util.JwtTokenManager
 import ru.nsu.reciepebook.util.Resource
 import java.io.IOException

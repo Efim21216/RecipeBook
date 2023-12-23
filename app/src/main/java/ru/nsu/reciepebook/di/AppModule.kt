@@ -1,12 +1,6 @@
 package ru.nsu.reciepebook.di
 
 import android.app.Application
-import android.content.Context.MODE_PRIVATE
-import android.content.SharedPreferences
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.PreferenceDataStoreFactory
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.preferencesDataStore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn

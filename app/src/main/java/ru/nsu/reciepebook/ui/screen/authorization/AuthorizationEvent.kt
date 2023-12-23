@@ -1,6 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.authorization
 
-import ru.nsu.reciepebook.ui.screen.registration.RegistrationEvent
 
 sealed class AuthorizationEvent {
     data class OnChangeEmail(val value: String): AuthorizationEvent()

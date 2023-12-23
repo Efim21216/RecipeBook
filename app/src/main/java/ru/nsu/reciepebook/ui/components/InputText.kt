@@ -1,6 +1,5 @@
 package ru.nsu.reciepebook.ui.components
 
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
@@ -12,11 +11,11 @@ import androidx.compose.ui.text.input.VisualTransformation
 
 @Composable
 fun InputText(
+    modifier: Modifier = Modifier,
     value: String,
     label: String? = null,
     hint: String? = null,
     onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
     isPassword: Boolean = false
 ) {
     TextField(

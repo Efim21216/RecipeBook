@@ -13,7 +13,6 @@ import kotlinx.coroutines.launch
 import ru.nsu.reciepebook.data.model.User
 import ru.nsu.reciepebook.data.use_cases.authorization.LoginUseCase
 import ru.nsu.reciepebook.ui.Screen
-import ru.nsu.reciepebook.ui.screen.registration.RegistrationEvent
 import ru.nsu.reciepebook.ui.state.TextFieldState
 import ru.nsu.reciepebook.util.Resource
 import ru.nsu.reciepebook.util.UiEvent
