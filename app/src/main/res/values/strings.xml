@@ -4,7 +4,12 @@
     <string name="reg">Зарегистрироваться</string>
     <string name="authorization">Авторизация</string>
     <string name="welcome">Рады вас видеть!</string>
+    <string name="enter_email">Введите почту</string>
+    <string name="enter_password">Введите пароль</string>
     <string name="entry">Вход</string>
+    <string name="profile">Профиль</string>
+    <string name="main">Главная</string>
+    <string name="search">Поиск</string>
     <string name="already_have_acc">Уже есть аккаунт?</string>
     <string name="not_yet_reg">Ещё не зарегистрированы?</string>
     <string name="password">Пароль</string>

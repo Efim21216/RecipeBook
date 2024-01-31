@@ -19,14 +19,14 @@ class MainViewModel @Inject constructor(
 
     private val _isLoading = mutableStateOf(true)
     val isLoading: State<Boolean> = _isLoading
-    private val _startScreen = mutableStateOf(Screen.AuthorizationScreen.route)
+    private val _startScreen = mutableStateOf(Screen.AuthGraph.route)
     val startScreen: State<String> = _startScreen
 
     init {
         authenticateUseCase().onEach {result ->
             when (result) {
                 StartEvent.End -> _isLoading.value = false
-                StartEvent.Success -> Unit //_startScreen.value = Screen.SecretScreen.route
+                StartEvent.Success -> _startScreen.value = Screen.MainGraph.route
             }
         }.launchIn(viewModelScope)
     }

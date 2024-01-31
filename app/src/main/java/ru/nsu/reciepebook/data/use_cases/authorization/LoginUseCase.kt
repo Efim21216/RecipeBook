@@ -14,7 +14,7 @@ class LoginUseCase @Inject constructor(
     private val repository: MainRepository,
     private val jwtTokenManager: JwtTokenManager
 ) {
-    operator fun invoke(user: User): Flow<Resource<AuthResponse>> = flow {
+    /*operator fun invoke(user: User): Flow<Resource<AuthResponse>> = flow {
         try {
             emit(Resource.Loading())
             val response = repository.login(user)
@@ -30,5 +30,9 @@ class LoginUseCase @Inject constructor(
         } catch(e: Exception) {
             emit(Resource.Error("Технические неполадки"))
         }
+    }*/
+    operator fun invoke(user: User): Flow<Resource<AuthResponse>> = flow {
+        emit(Resource.Loading())
+        emit(Resource.Success(AuthResponse("access", "refresh")))
     }
 }

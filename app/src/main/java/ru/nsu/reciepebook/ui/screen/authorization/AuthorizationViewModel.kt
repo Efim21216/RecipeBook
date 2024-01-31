@@ -37,7 +37,9 @@ class AuthorizationViewModel @Inject constructor(
             is AuthorizationEvent.OnChangePassword -> _password.value =
                 password.value.copy(text = event.value)
             AuthorizationEvent.Authorize -> login()
-            AuthorizationEvent.ToReg -> sendUiEvent(UiEvent.Navigate(Screen.RegistrationScreen.route))
+            AuthorizationEvent.ToReg -> sendUiEvent(
+                UiEvent.PopUpTo(Screen.RegistrationScreen.route,
+                    Screen.AuthorizationScreen.route))
         }
     }
     private fun login() {
@@ -50,7 +52,9 @@ class AuthorizationViewModel @Inject constructor(
             when (result) {
                 is Resource.Error -> sendUiEvent(UiEvent.ShowSnackBar(message = result.message ?: "Ошибка"))
                 is Resource.Loading -> Unit
-                is Resource.Success -> sendUiEvent(UiEvent.Navigate(Screen.SecretScreen.route))
+                is Resource.Success -> sendUiEvent(
+                    UiEvent.PopUpTo(Screen.MainGraph.route,
+                        Screen.AuthorizationScreen.route))
             }
         }.launchIn(viewModelScope)
     }

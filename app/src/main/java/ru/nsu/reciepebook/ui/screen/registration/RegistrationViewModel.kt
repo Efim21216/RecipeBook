@@ -48,7 +48,9 @@ class RegistrationViewModel @Inject constructor(
                 register()
             }
 
-            RegistrationEvent.ToAuth -> sendUiEvent(UiEvent.Navigate(Screen.AuthorizationScreen.route))
+            RegistrationEvent.ToAuth -> sendUiEvent(
+                UiEvent.PopUpTo(Screen.AuthorizationScreen.route,
+                    Screen.RegistrationScreen.route))
         }
     }
     private fun register() {
@@ -59,7 +61,7 @@ class RegistrationViewModel @Inject constructor(
             when (result) {
                 is Resource.Error -> sendUiEvent(UiEvent.ShowSnackBar(message = result.message ?: "Ошибка"))
                 is Resource.Loading -> Unit
-                is Resource.Success -> sendUiEvent(UiEvent.Navigate(Screen.SecretScreen.route))
+                is Resource.Success -> sendUiEvent(UiEvent.Navigate(Screen.MainGraph.route))
             }
         }.launchIn(viewModelScope)
     }

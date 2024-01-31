@@ -9,7 +9,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import dagger.hilt.android.AndroidEntryPoint
-import ru.nsu.reciepebook.ui.Navigation
+import ru.nsu.reciepebook.ui.navigation.Navigation
 import ru.nsu.reciepebook.ui.theme.ReciepeBookTheme
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
