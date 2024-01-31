@@ -26,6 +26,7 @@ import androidx.navigation.NavHostController
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
+import ru.nsu.reciepebook.ui.components.TopBar
 import ru.nsu.reciepebook.util.UiEvent
 
 @Composable
@@ -57,57 +58,62 @@ fun RegistrationScreen(
 
         }
     }
-    Column(
-        modifier = Modifier
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Center,
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Text(
-            text = stringResource(id = R.string.welcome),
-            style = MaterialTheme.typography.headlineMedium
-        )
-        Spacer(modifier = Modifier
-            .padding(PaddingValues(top = 45.dp)))
-        InputFields(onChangeEmail = {viewModel.onEvent(RegistrationEvent.OnChangeEmail(it))},
-            onChangePassword = {viewModel.onEvent(RegistrationEvent.OnChangePassword(it))},
-            email = viewModel.email.value.text, password = viewModel.password.value.text)
-        Spacer(modifier = Modifier
-            .padding(PaddingValues(top = 100.dp)))
-        Button(
-            onClick = {
-                viewModel.onEvent(RegistrationEvent.Register)
-            },
+    TopBar(
+        title = stringResource(id = R.string.registration)
+    ) { padding ->
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(20.dp, 0.dp),
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.secondary
-            )
+                .fillMaxSize()
+                .padding(padding),
+            verticalArrangement = Arrangement.Center,
+            horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(id = R.string.reg),
+                text = stringResource(id = R.string.welcome),
                 style = MaterialTheme.typography.headlineMedium
             )
-        }
-        Spacer(modifier = Modifier
-            .padding(PaddingValues(top = 10.dp)))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Text(
-                text = stringResource(id = R.string.already_have_acc),
-                style = MaterialTheme.typography.headlineSmall,
-            )
-            TextButton(
-                onClick = { viewModel.onEvent(RegistrationEvent.ToAuth) }
+            Spacer(modifier = Modifier
+                .padding(PaddingValues(top = 45.dp)))
+            InputFields(onChangeEmail = {viewModel.onEvent(RegistrationEvent.OnChangeEmail(it))},
+                onChangePassword = {viewModel.onEvent(RegistrationEvent.OnChangePassword(it))},
+                email = viewModel.email.value.text, password = viewModel.password.value.text)
+            Spacer(modifier = Modifier
+                .padding(PaddingValues(top = 100.dp)))
+            Button(
+                onClick = {
+                    viewModel.onEvent(RegistrationEvent.Register)
+                },
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(20.dp, 0.dp),
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.secondary
+                )
             ) {
                 Text(
-                    textAlign = TextAlign.Center,
-                    text = stringResource(id = R.string.entry),
-                    color = MaterialTheme.colorScheme.primary,
+                    text = stringResource(id = R.string.reg),
+                    style = MaterialTheme.typography.headlineMedium
+                )
+            }
+            Spacer(modifier = Modifier
+                .padding(PaddingValues(top = 10.dp)))
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.already_have_acc),
                     style = MaterialTheme.typography.headlineSmall,
                 )
+                TextButton(
+                    onClick = { viewModel.onEvent(RegistrationEvent.ToAuth) }
+                ) {
+                    Text(
+                        textAlign = TextAlign.Center,
+                        text = stringResource(id = R.string.entry),
+                        color = MaterialTheme.colorScheme.primary,
+                        style = MaterialTheme.typography.headlineSmall,
+                    )
+                }
             }
         }
     }

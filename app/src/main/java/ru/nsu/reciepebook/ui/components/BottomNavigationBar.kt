@@ -57,13 +57,26 @@ sealed class BottomBarItem(
         unselectedIcon = Icons.Outlined.Search,
     )
 }
+sealed class WithoutBottomBarScreen(val route: String) {
+    data object Authorization: WithoutBottomBarScreen(
+        route = Screen.AuthorizationScreen.route
+    )
+    data object Registration: WithoutBottomBarScreen(
+        route = Screen.RegistrationScreen.route
+    )
+}
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
-    val screens = listOf(
+    val bottomScreens = listOf(
         BottomBarItem.Home,
         BottomBarItem.Profile,
         BottomBarItem.Search,
     )
+    val screensWithoutBottomBar = listOf(
+        WithoutBottomBarScreen.Authorization,
+        WithoutBottomBarScreen.Registration
+    )
+
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentDestination = navBackStackEntry?.destination
     val itemColors = NavigationBarItemDefaults.colors(
@@ -73,10 +86,16 @@ fun BottomNavigationBar(navController: NavHostController) {
         unselectedIconColor = Black50,
         unselectedTextColor = Black50
     )
+    var isShow = true
+    currentDestination?.route?.let {
+        isShow = !screensWithoutBottomBar.map { it.route }.contains(it)
+    }
+    if (!isShow)
+        return
     NavigationBar(
         containerColor = Primary200
     ) {
-        screens.forEach{ item ->
+        bottomScreens.forEach{ item ->
             NavigationBarItem(
                 label = {Text(text = item.title)},
                 selected = isSelected(currentDestination, item),
