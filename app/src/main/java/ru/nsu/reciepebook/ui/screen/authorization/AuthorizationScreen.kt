@@ -11,7 +11,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.Text
@@ -26,13 +25,12 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import ru.nsu.reciepebook.R
+import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
 import ru.nsu.reciepebook.ui.components.TopBar
-import ru.nsu.reciepebook.util.UiEvent
 
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AuthorizationScreen(
     navController: NavHostController,
@@ -48,17 +46,17 @@ fun AuthorizationScreen(
             Log.d("MyTag", "BackStack: $routes")
         }
 
-        viewModel.uiEvent.collect {event ->
+        viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.ShowSnackBar -> {
+                is AuthorizationViewModel.UIEvent.ShowSnackBar -> {
                     snackBarHostState.showSnackbar(
                         message = event.message,
                         duration = SnackbarDuration.Short
                     )
                 }
-                is UiEvent.Navigate -> navController.navigate(event.route)
-                is UiEvent.PopUpTo -> navController.navigate(event.route) {
-                    popUpTo(event.from) {
+
+                is AuthorizationViewModel.UIEvent.ToMain -> navController.navigate(Screen.MainGraph.route) {
+                    popUpTo(Screen.AuthorizationScreen.route) {
                         inclusive = true
                     }
                 }
@@ -80,13 +78,19 @@ fun AuthorizationScreen(
                 text = stringResource(id = R.string.welcome),
                 style = MaterialTheme.typography.headlineMedium
             )
-            Spacer(modifier = Modifier
-                .padding(PaddingValues(top = 45.dp)))
-            InputFields(onChangeEmail = {viewModel.onEvent(AuthorizationEvent.OnChangeEmail(it))},
-                onChangePassword = {viewModel.onEvent(AuthorizationEvent.OnChangePassword(it))},
-                email = viewModel.email.value.text, password = viewModel.password.value.text)
-            Spacer(modifier = Modifier
-                .padding(PaddingValues(top = 100.dp)))
+            Spacer(
+                modifier = Modifier
+                    .padding(PaddingValues(top = 45.dp))
+            )
+            InputFields(
+                onChangeEmail = { viewModel.onEvent(AuthorizationEvent.OnChangeEmail(it)) },
+                onChangePassword = { viewModel.onEvent(AuthorizationEvent.OnChangePassword(it)) },
+                email = viewModel.email.value.text, password = viewModel.password.value.text
+            )
+            Spacer(
+                modifier = Modifier
+                    .padding(PaddingValues(top = 100.dp))
+            )
             Button(
                 onClick = {
                     viewModel.onEvent(AuthorizationEvent.Authorize)
@@ -103,8 +107,10 @@ fun AuthorizationScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
-            Spacer(modifier = Modifier
-                .padding(PaddingValues(top = 10.dp)))
+            Spacer(
+                modifier = Modifier
+                    .padding(PaddingValues(top = 10.dp))
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -113,7 +119,13 @@ fun AuthorizationScreen(
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 TextButton(
-                    onClick = { viewModel.onEvent(AuthorizationEvent.ToReg) }
+                    onClick = {
+                        navController.navigate(Screen.RegistrationScreen.route) {
+                            popUpTo(Screen.AuthorizationScreen.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 ) {
                     Text(
                         textAlign = TextAlign.Center,

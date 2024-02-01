@@ -13,10 +13,8 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import ru.nsu.reciepebook.data.model.User
 import ru.nsu.reciepebook.data.use_cases.registration.RegisterUseCase
-import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.state.TextFieldState
 import ru.nsu.reciepebook.util.Resource
-import ru.nsu.reciepebook.util.UiEvent
 import javax.inject.Inject
 
 @HiltViewModel
@@ -28,7 +26,7 @@ class RegistrationViewModel @Inject constructor(
     val email: State<TextFieldState> = _email
     val password: State<TextFieldState> = _password
 
-    private val _uiEvent =  Channel<UiEvent>()
+    private val _uiEvent =  Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onEvent(event: RegistrationEvent) {
@@ -47,10 +45,6 @@ class RegistrationViewModel @Inject constructor(
             RegistrationEvent.Register -> {
                 register()
             }
-
-            RegistrationEvent.ToAuth -> sendUiEvent(
-                UiEvent.PopUpTo(Screen.AuthorizationScreen.route,
-                    Screen.RegistrationScreen.route))
         }
     }
     private fun register() {
@@ -59,16 +53,23 @@ class RegistrationViewModel @Inject constructor(
             password = password.value.text
         )).onEach { result ->
             when (result) {
-                is Resource.Error -> sendUiEvent(UiEvent.ShowSnackBar(message = result.message ?: "Ошибка"))
+                is Resource.Error -> sendUiEvent(UIEvent.ShowSnackBar(message = result.message ?: "Ошибка"))
                 is Resource.Loading -> Unit
-                is Resource.Success -> sendUiEvent(UiEvent.Navigate(Screen.MainGraph.route))
+                is Resource.Success -> sendUiEvent(UIEvent.ToMain)
             }
         }.launchIn(viewModelScope)
     }
 
-    private fun sendUiEvent(event: UiEvent) {
+    private fun sendUiEvent(event: UIEvent) {
         viewModelScope.launch {
             _uiEvent.send(event)
         }
+    }
+    sealed class UIEvent {
+        data object ToMain: UIEvent()
+        data class ShowSnackBar(
+            val message: String,
+            val action: String? = null
+        ): UIEvent()
     }
 }

@@ -24,10 +24,11 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import ru.nsu.reciepebook.R
+import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
 import ru.nsu.reciepebook.ui.components.TopBar
-import ru.nsu.reciepebook.util.UiEvent
+
 
 @Composable
 fun RegistrationScreen(
@@ -36,21 +37,17 @@ fun RegistrationScreen(
 ) {
     val snackBarHostState = LocalSnackbarHostState.current
     LaunchedEffect(key1 = true) {
-        /*val routes = navController.currentBackStack.value
-            .map { it.destination.route }
-            .joinToString(", ")
-        Log.d("MyTag", "BackStack: $routes")*/
-        viewModel.uiEvent.collect {event ->
+        viewModel.uiEvent.collect { event ->
             when (event) {
-                is UiEvent.ShowSnackBar -> {
+                is RegistrationViewModel.UIEvent.ShowSnackBar -> {
                     snackBarHostState.showSnackbar(
                         message = event.message,
                         duration = SnackbarDuration.Short
                     )
                 }
-                is UiEvent.Navigate -> navController.navigate(event.route)
-                is UiEvent.PopUpTo -> navController.navigate(event.route) {
-                    popUpTo(event.from) {
+
+                is RegistrationViewModel.UIEvent.ToMain -> navController.navigate(Screen.MainGraph.route) {
+                    popUpTo(Screen.RegistrationScreen.route) {
                         inclusive = true
                     }
                 }
@@ -72,13 +69,19 @@ fun RegistrationScreen(
                 text = stringResource(id = R.string.welcome),
                 style = MaterialTheme.typography.headlineMedium
             )
-            Spacer(modifier = Modifier
-                .padding(PaddingValues(top = 45.dp)))
-            InputFields(onChangeEmail = {viewModel.onEvent(RegistrationEvent.OnChangeEmail(it))},
-                onChangePassword = {viewModel.onEvent(RegistrationEvent.OnChangePassword(it))},
-                email = viewModel.email.value.text, password = viewModel.password.value.text)
-            Spacer(modifier = Modifier
-                .padding(PaddingValues(top = 100.dp)))
+            Spacer(
+                modifier = Modifier
+                    .padding(PaddingValues(top = 45.dp))
+            )
+            InputFields(
+                onChangeEmail = { viewModel.onEvent(RegistrationEvent.OnChangeEmail(it)) },
+                onChangePassword = { viewModel.onEvent(RegistrationEvent.OnChangePassword(it)) },
+                email = viewModel.email.value.text, password = viewModel.password.value.text
+            )
+            Spacer(
+                modifier = Modifier
+                    .padding(PaddingValues(top = 100.dp))
+            )
             Button(
                 onClick = {
                     viewModel.onEvent(RegistrationEvent.Register)
@@ -95,8 +98,10 @@ fun RegistrationScreen(
                     style = MaterialTheme.typography.headlineMedium
                 )
             }
-            Spacer(modifier = Modifier
-                .padding(PaddingValues(top = 10.dp)))
+            Spacer(
+                modifier = Modifier
+                    .padding(PaddingValues(top = 10.dp))
+            )
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -105,7 +110,13 @@ fun RegistrationScreen(
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 TextButton(
-                    onClick = { viewModel.onEvent(RegistrationEvent.ToAuth) }
+                    onClick = {
+                        navController.navigate(Screen.AuthorizationScreen.route) {
+                            popUpTo(Screen.RegistrationScreen.route) {
+                                inclusive = true
+                            }
+                        }
+                    }
                 ) {
                     Text(
                         textAlign = TextAlign.Center,
