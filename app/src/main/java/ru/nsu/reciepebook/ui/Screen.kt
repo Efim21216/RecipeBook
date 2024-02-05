@@ -15,6 +15,12 @@ sealed class Screen(val route: String) {
     data object AddRecipeStepScreen: Screen(route = "add_recipe_step_screen")
     data object AddRecipeInfoScreen: Screen(route = "add_recipe_info_screen")
     data object AddRecipeIngredientsScreen: Screen(route = "add_recipe_ingredients_screen")
+
+}
+sealed class Graph(val route: String) {
     data object AuthGraph: Screen(route = "auth_graph")
     data object MainGraph: Screen(route = "main_graph")
+    data object HomeGraph: Screen(route = "home_graph")
+    data object ProfileGraph: Screen(route = "profile_graph")
+    data object SearchGraph: Screen(route = "search_graph")
 }

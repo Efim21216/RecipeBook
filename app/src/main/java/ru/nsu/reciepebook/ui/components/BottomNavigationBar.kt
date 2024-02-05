@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.components
 
+
 import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Home
@@ -24,6 +25,7 @@ import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
+import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.theme.Black50
 import ru.nsu.reciepebook.ui.theme.Primary200
@@ -37,21 +39,21 @@ sealed class BottomBarItem(
     val unselectedIcon: ImageVector,
 ) {
     data object Home : BottomBarItem(
-        route = Screen.HomeScreen.route,
+        route = Graph.HomeGraph.route,
         title = "Главная",
         selectedIcon = Icons.Filled.Home,
         unselectedIcon = Icons.Outlined.Home,
     )
 
     data object Profile : BottomBarItem(
-        route = Screen.ProfileScreen.route,
+        route = Graph.ProfileGraph.route,
         title = "Профиль",
         selectedIcon = Icons.Filled.Person,
         unselectedIcon = Icons.Outlined.Person,
     )
 
     data object Search : BottomBarItem(
-        route = Screen.SearchScreen.route,
+        route = Graph.SearchGraph.route,
         title = "Поиск",
         selectedIcon = Icons.Filled.Search,
         unselectedIcon = Icons.Outlined.Search,
@@ -106,14 +108,17 @@ fun BottomNavigationBar(navController: NavHostController) {
                         // avoid building up a large stack of destinations
                         // on the back stack as users select items
 
-                        popUpTo(Screen.HomeScreen.route) {
-                            saveState = true
+                        popUpTo(Graph.MainGraph.route) {
+                            if (!isSelected(currentDestination, item))
+                                saveState = true
                         }
                         // Avoid multiple copies of the same destination when
                         // reselecting the same item
                         launchSingleTop = true
                         // Restore state when reselecting a previously selected item
-                        restoreState = true
+                        if (!isSelected(currentDestination, item))
+                            restoreState = true
+
                     }
                 },
                 icon = {
@@ -128,7 +133,7 @@ fun isSelected(currentDestination: NavDestination?, item: BottomBarItem) =
     currentDestination?.hierarchy?.any { it.route == item.route } == true
 @Preview
 @Composable
-fun bar() {
+fun Bar() {
     val screens = listOf(
         BottomBarItem.Home,
         BottomBarItem.Profile,

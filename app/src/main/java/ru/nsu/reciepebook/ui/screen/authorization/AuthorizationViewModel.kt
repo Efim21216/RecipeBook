@@ -24,7 +24,6 @@ class AuthorizationViewModel @Inject constructor(
     private val _password = mutableStateOf(TextFieldState(text = "", hint = "Введите пароль"))
     val email: State<TextFieldState> = _email
     val password: State<TextFieldState> = _password
-
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 

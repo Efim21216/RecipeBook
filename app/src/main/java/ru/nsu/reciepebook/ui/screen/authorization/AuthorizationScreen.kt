@@ -1,6 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.authorization
 
-import android.util.Log
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -23,9 +22,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import ru.nsu.reciepebook.R
-import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
 import ru.nsu.reciepebook.ui.components.TopBar
@@ -33,19 +30,12 @@ import ru.nsu.reciepebook.ui.components.TopBar
 
 @Composable
 fun AuthorizationScreen(
-    navController: NavHostController,
+    toMain: () -> Unit,
+    toRegister: () -> Unit,
     viewModel: AuthorizationViewModel = hiltViewModel()
 ) {
     val snackBarHostState = LocalSnackbarHostState.current
-
     LaunchedEffect(key1 = true) {
-        navController.addOnDestinationChangedListener { controller, _, _ ->
-            val routes = controller.currentBackStack.value
-                .map { it.destination.route }
-                .joinToString(", ")
-            Log.d("MyTag", "BackStack: $routes")
-        }
-
         viewModel.uiEvent.collect { event ->
             when (event) {
                 is AuthorizationViewModel.UIEvent.ShowSnackBar -> {
@@ -55,11 +45,7 @@ fun AuthorizationScreen(
                     )
                 }
 
-                is AuthorizationViewModel.UIEvent.ToMain -> navController.navigate(Screen.MainGraph.route) {
-                    popUpTo(Screen.AuthorizationScreen.route) {
-                        inclusive = true
-                    }
-                }
+                is AuthorizationViewModel.UIEvent.ToMain -> toMain()
             }
 
         }
@@ -119,13 +105,7 @@ fun AuthorizationScreen(
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 TextButton(
-                    onClick = {
-                        navController.navigate(Screen.RegistrationScreen.route) {
-                            popUpTo(Screen.AuthorizationScreen.route) {
-                                inclusive = true
-                            }
-                        }
-                    }
+                    onClick = toRegister
                 ) {
                     Text(
                         textAlign = TextAlign.Center,

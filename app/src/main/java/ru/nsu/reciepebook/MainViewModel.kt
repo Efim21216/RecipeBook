@@ -8,7 +8,7 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import ru.nsu.reciepebook.data.use_cases.start.AuthenticateUseCase
-import ru.nsu.reciepebook.ui.Screen
+import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.util.StartEvent
 import javax.inject.Inject
 
@@ -19,14 +19,14 @@ class MainViewModel @Inject constructor(
 
     private val _isLoading = mutableStateOf(true)
     val isLoading: State<Boolean> = _isLoading
-    private val _startScreen = mutableStateOf(Screen.AuthGraph.route)
+    private val _startScreen = mutableStateOf(Graph.AuthGraph.route)
     val startScreen: State<String> = _startScreen
 
     init {
         authenticateUseCase().onEach {result ->
             when (result) {
                 StartEvent.End -> _isLoading.value = false
-                StartEvent.Success -> _startScreen.value = Screen.MainGraph.route
+                StartEvent.Success -> _startScreen.value = Graph.MainGraph.route
             }
         }.launchIn(viewModelScope)
     }

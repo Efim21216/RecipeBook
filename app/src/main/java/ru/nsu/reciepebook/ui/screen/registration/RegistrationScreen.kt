@@ -24,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import ru.nsu.reciepebook.R
+import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
@@ -46,7 +47,7 @@ fun RegistrationScreen(
                     )
                 }
 
-                is RegistrationViewModel.UIEvent.ToMain -> navController.navigate(Screen.MainGraph.route) {
+                is RegistrationViewModel.UIEvent.ToMain -> navController.navigate(Graph.MainGraph.route) {
                     popUpTo(Screen.RegistrationScreen.route) {
                         inclusive = true
                     }
