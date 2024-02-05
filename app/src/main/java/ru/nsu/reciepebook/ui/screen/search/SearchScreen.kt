@@ -7,15 +7,31 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import kotlinx.coroutines.flow.Flow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.TopBar
 
 @Composable
-fun SearchScreen() {
+fun SearchScreen(
+    uiState: SearchState,
+    onEvent: (SearchEvent) -> Unit,
+    uiEvent: Flow<SearchViewModel.UIEvent>
+) {
+
+    LaunchedEffect(key1 = true) {
+        uiEvent.collect { event ->
+            when (event) {
+                else -> {}
+            }
+
+        }
+    }
+
     TopBar(
         title = stringResource(id = R.string.search)
     ) { padding ->

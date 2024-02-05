@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
+import kotlinx.coroutines.flow.Flow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
@@ -32,11 +32,13 @@ import ru.nsu.reciepebook.ui.components.TopBar
 fun AuthorizationScreen(
     toMain: () -> Unit,
     toRegister: () -> Unit,
-    viewModel: AuthorizationViewModel = hiltViewModel()
+    uiState: AuthState,
+    onEvent: (AuthorizationEvent) -> Unit,
+    uiEvent: Flow<AuthorizationViewModel.UIEvent>
 ) {
     val snackBarHostState = LocalSnackbarHostState.current
     LaunchedEffect(key1 = true) {
-        viewModel.uiEvent.collect { event ->
+        uiEvent.collect { event ->
             when (event) {
                 is AuthorizationViewModel.UIEvent.ShowSnackBar -> {
                     snackBarHostState.showSnackbar(
@@ -69,9 +71,9 @@ fun AuthorizationScreen(
                     .padding(PaddingValues(top = 45.dp))
             )
             InputFields(
-                onChangeEmail = { viewModel.onEvent(AuthorizationEvent.OnChangeEmail(it)) },
-                onChangePassword = { viewModel.onEvent(AuthorizationEvent.OnChangePassword(it)) },
-                email = viewModel.email.value.text, password = viewModel.password.value.text
+                onChangeEmail = { onEvent(AuthorizationEvent.OnChangeEmail(it)) },
+                onChangePassword = { onEvent(AuthorizationEvent.OnChangePassword(it)) },
+                email = uiState.email, password = uiState.password
             )
             Spacer(
                 modifier = Modifier
@@ -79,7 +81,7 @@ fun AuthorizationScreen(
             )
             Button(
                 onClick = {
-                    viewModel.onEvent(AuthorizationEvent.Authorize)
+                    onEvent(AuthorizationEvent.Authorize)
                 },
                 modifier = Modifier
                     .fillMaxWidth()

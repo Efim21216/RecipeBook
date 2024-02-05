@@ -95,6 +95,9 @@ dependencies {
     //splash screen
     implementation("androidx.core:core-splashscreen:1.0.0")
 
+    //collectAsStateWithLifecycle
+    implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
+
 }
 kapt {
     correctErrorTypes = true

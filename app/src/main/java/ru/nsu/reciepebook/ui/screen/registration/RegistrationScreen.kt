@@ -21,11 +21,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
+import kotlinx.coroutines.flow.Flow
 import ru.nsu.reciepebook.R
-import ru.nsu.reciepebook.ui.Graph
-import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.components.InputFields
 import ru.nsu.reciepebook.ui.components.LocalSnackbarHostState
 import ru.nsu.reciepebook.ui.components.TopBar
@@ -33,12 +30,15 @@ import ru.nsu.reciepebook.ui.components.TopBar
 
 @Composable
 fun RegistrationScreen(
-    navController: NavHostController,
-    viewModel: RegistrationViewModel = hiltViewModel()
+    toMain: () -> Unit,
+    toAuth: () -> Unit,
+    uiEvent: Flow<RegistrationViewModel.UIEvent>,
+    onEvent: (RegistrationEvent) ->Unit,
+    uiState: RegState
 ) {
     val snackBarHostState = LocalSnackbarHostState.current
     LaunchedEffect(key1 = true) {
-        viewModel.uiEvent.collect { event ->
+        uiEvent.collect { event ->
             when (event) {
                 is RegistrationViewModel.UIEvent.ShowSnackBar -> {
                     snackBarHostState.showSnackbar(
@@ -47,11 +47,7 @@ fun RegistrationScreen(
                     )
                 }
 
-                is RegistrationViewModel.UIEvent.ToMain -> navController.navigate(Graph.MainGraph.route) {
-                    popUpTo(Screen.RegistrationScreen.route) {
-                        inclusive = true
-                    }
-                }
+                is RegistrationViewModel.UIEvent.ToMain -> toMain()
             }
 
         }
@@ -75,9 +71,9 @@ fun RegistrationScreen(
                     .padding(PaddingValues(top = 45.dp))
             )
             InputFields(
-                onChangeEmail = { viewModel.onEvent(RegistrationEvent.OnChangeEmail(it)) },
-                onChangePassword = { viewModel.onEvent(RegistrationEvent.OnChangePassword(it)) },
-                email = viewModel.email.value.text, password = viewModel.password.value.text
+                onChangeEmail = { onEvent(RegistrationEvent.OnChangeEmail(it)) },
+                onChangePassword = { onEvent(RegistrationEvent.OnChangePassword(it)) },
+                email = uiState.email, password = uiState.password
             )
             Spacer(
                 modifier = Modifier
@@ -85,7 +81,7 @@ fun RegistrationScreen(
             )
             Button(
                 onClick = {
-                    viewModel.onEvent(RegistrationEvent.Register)
+                    onEvent(RegistrationEvent.Register)
                 },
                 modifier = Modifier
                     .fillMaxWidth()
@@ -111,13 +107,7 @@ fun RegistrationScreen(
                     style = MaterialTheme.typography.headlineSmall,
                 )
                 TextButton(
-                    onClick = {
-                        navController.navigate(Screen.AuthorizationScreen.route) {
-                            popUpTo(Screen.RegistrationScreen.route) {
-                                inclusive = true
-                            }
-                        }
-                    }
+                    onClick = toAuth
                 ) {
                     Text(
                         textAlign = TextAlign.Center,

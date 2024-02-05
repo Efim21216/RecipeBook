@@ -1,18 +1,19 @@
 package ru.nsu.reciepebook.ui.screen.authorization
 
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.channels.Channel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.nsu.reciepebook.data.model.User
 import ru.nsu.reciepebook.data.use_cases.authorization.LoginUseCase
-import ru.nsu.reciepebook.ui.state.TextFieldState
 import ru.nsu.reciepebook.util.Resource
 import javax.inject.Inject
 @HiltViewModel
@@ -20,27 +21,28 @@ class AuthorizationViewModel @Inject constructor(
     val loginUseCase: LoginUseCase
 ): ViewModel() {
 
-    private val _email = mutableStateOf(TextFieldState(text = "", hint = "Введите почту"))
-    private val _password = mutableStateOf(TextFieldState(text = "", hint = "Введите пароль"))
-    val email: State<TextFieldState> = _email
-    val password: State<TextFieldState> = _password
+
+    private val _uiState = MutableStateFlow(AuthState(email = "", password = ""))
+    val uiState: StateFlow<AuthState> = _uiState.asStateFlow()
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
 
     fun onEvent(event: AuthorizationEvent) {
         when (event) {
-            is AuthorizationEvent.OnChangeEmail -> _email.value =
-                email.value.copy(text = event.value)
-            is AuthorizationEvent.OnChangePassword -> _password.value =
-                password.value.copy(text = event.value)
+            is AuthorizationEvent.OnChangeEmail -> _uiState.update {
+                _uiState.value.copy(email=event.value)
+            }
+            is AuthorizationEvent.OnChangePassword -> _uiState.update {
+                _uiState.value.copy(password=event.value)
+            }
             AuthorizationEvent.Authorize -> login()
         }
     }
     private fun login() {
         loginUseCase(
             User(
-            email = email.value.text,
-            password = password.value.text
+            email = uiState.value.email,
+            password = uiState.value.email
         )
         ).onEach { result ->
             when (result) {

@@ -10,6 +10,10 @@
     <string name="add_recipe">Добавление рецепта</string>
     <string name="profile">Профиль</string>
     <string name="main">Главная</string>
+    <string name="filter">Фильтр</string>
+    <string name="interactive_cooking">Интерактивная готовка</string>
+    <string name="recipe_steps">Шаги рецепта</string>
+    <string name="search_results">Результаты поиска</string>
     <string name="search">Поиск</string>
     <string name="my_recipes">Мои рецепты</string>
     <string name="already_have_acc">Уже есть аккаунт?</string>
