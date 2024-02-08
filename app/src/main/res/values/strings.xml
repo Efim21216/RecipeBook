@@ -8,11 +8,13 @@
     <string name="enter_password">Введите пароль</string>
     <string name="entry">Вход</string>
     <string name="add_recipe">Добавление рецепта</string>
+    <string name="recipe_summary">Общая информация</string>
+    <string name="ingredients">Ингредиенты</string>
+    <string name="step">Шаг</string>
     <string name="profile">Профиль</string>
     <string name="main">Главная</string>
     <string name="filter">Фильтр</string>
     <string name="interactive_cooking">Интерактивная готовка</string>
-    <string name="recipe_steps">Шаги рецепта</string>
     <string name="search_results">Результаты поиска</string>
     <string name="search">Поиск</string>
     <string name="my_recipes">Мои рецепты</string>

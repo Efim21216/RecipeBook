@@ -1,9 +1,10 @@
-package ru.nsu.reciepebook.ui.screen.addRecipeStep
+package ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -15,13 +16,15 @@ import androidx.compose.ui.res.stringResource
 import kotlinx.coroutines.flow.Flow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
+import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 
 @Composable
-fun AddRecipeStep(
-    uiState: AddRecipeStepState,
-    onEvent: (AddRecipeStepEvent) -> Unit,
-    uiEvent: Flow<AddRecipeStepViewModel.UIEvent>,
-    navigateUp: () -> Unit
+fun AddRecipeInfo(
+    uiState: AddRecipeInfoState,
+    onEvent: (AddRecipeInfoEvent) -> Unit,
+    uiEvent: Flow<AddRecipeViewModel.UIEventInfo>,
+    navigateUp: () -> Unit,
+    toAddIngredients: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
@@ -33,7 +36,7 @@ fun AddRecipeStep(
     }
 
     TopBarWithArrow(
-        title = stringResource(id = R.string.add_recipe),
+        title = stringResource(id = R.string.recipe_summary),
         onBackArrow = navigateUp
     ) { padding ->
         Column(
@@ -48,6 +51,12 @@ fun AddRecipeStep(
                 style = MaterialTheme.typography.headlineLarge,
                 color = Color.Green
             )
+            Button(onClick = { onEvent(AddRecipeInfoEvent.AddId(1)) }) {
+                Text(text = "Add ID!")
+            }
+            Button(onClick = toAddIngredients) {
+                Text(text = "To add ingredients")
+            }
         }
     }
 }

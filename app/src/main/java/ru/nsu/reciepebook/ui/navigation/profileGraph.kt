@@ -8,8 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.ui.Screen
-import ru.nsu.reciepebook.ui.screen.addRecipeInfo.AddRecipeInfo
-import ru.nsu.reciepebook.ui.screen.addRecipeInfo.AddRecipeInfoViewModel
 import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipes
 import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipesViewModel
 import ru.nsu.reciepebook.ui.screen.profile.ProfileScreen
@@ -36,7 +34,7 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
                     navController.navigate(Screen.MyRecipesScreen.route)
                 },
                 toAddRecipeInfo = {
-                    navController.navigate(Screen.AddRecipeInfoScreen.route)
+                    navController.navigate(Graph.AddRecipeGraph.route)
                 }
             )
         }
@@ -55,18 +53,7 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
                 navigateUp = { navController.navigateUp() }
             )
         }
-        composable(
-            route = Screen.AddRecipeInfoScreen.route
-        ) {
-            val viewModel = hiltViewModel<AddRecipeInfoViewModel>()
-            val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-            AddRecipeInfo(
-                uiState = uiState.value,
-                onEvent = viewModel::onEvent,
-                uiEvent = viewModel.uiEvent,
-                navigateUp = { navController.navigateUp() }
-            )
-        }
+        addRecipeGraph(navController)
         composableRecipeInfo(navController)
     }
 }

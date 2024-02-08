@@ -23,4 +23,5 @@ sealed class Graph(val route: String) {
     data object HomeGraph: Screen(route = "home_graph")
     data object ProfileGraph: Screen(route = "profile_graph")
     data object SearchGraph: Screen(route = "search_graph")
+    data object AddRecipeGraph: Screen(route = "add_recipe_graph")
 }

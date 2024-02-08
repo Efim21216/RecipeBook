@@ -33,7 +33,7 @@ fun RecipeSteps(
     }
 
     TopBarWithArrow(
-        title = stringResource(id = R.string.recipe_steps),
+        title = stringResource(id = R.string.step),
         onBackArrow = navigateUp
     ) { padding ->
         Column(
