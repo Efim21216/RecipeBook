@@ -7,7 +7,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.launchIn
 import kotlinx.coroutines.flow.onEach
-import ru.nsu.reciepebook.data.use_cases.start.AuthenticateUseCase
+import ru.nsu.reciepebook.data.use_cases.AuthenticateUseCase
 import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.util.StartEvent
 import javax.inject.Inject

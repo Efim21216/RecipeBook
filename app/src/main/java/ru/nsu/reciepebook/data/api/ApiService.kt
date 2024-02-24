@@ -8,6 +8,7 @@ import retrofit2.http.Multipart
 import retrofit2.http.POST
 import retrofit2.http.Part
 import ru.nsu.reciepebook.data.model.AuthResponse
+import ru.nsu.reciepebook.data.model.RecipeInfo
 import ru.nsu.reciepebook.data.model.User
 
 interface ApiService {
@@ -21,6 +22,12 @@ interface ApiService {
     @Multipart
     @POST("/image")
     suspend fun uploadImage(
+        @Header("Authorization") token: String,
         @Part image: MultipartBody.Part
     )
+    @POST
+    suspend fun createRecipeInfo(
+        @Header("Authorization") token: String,
+        @Body recipeInfo: RecipeInfo
+    ): Response<Unit>
 }

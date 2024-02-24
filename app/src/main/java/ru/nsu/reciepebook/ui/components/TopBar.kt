@@ -11,6 +11,10 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
 import ru.nsu.reciepebook.ui.theme.Primary300
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -23,14 +27,23 @@ fun TopBar(
         topBar = {
             TopAppBar(
                 title = {
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.headlineLarge
-                )
-            })
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.headlineLarge
+                    )
+                },
+                modifier = Modifier.shadow(elevation = 5.dp),
+            )
         },
         content = content
     )
+}
+
+@Preview
+@Composable
+fun ShowTopBar() {
+    TopBar(title = "Title") {
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -58,7 +71,7 @@ fun TopBarWithArrow(
                         )
                     }
                 }
-                )
+            )
         },
         content = content
     )

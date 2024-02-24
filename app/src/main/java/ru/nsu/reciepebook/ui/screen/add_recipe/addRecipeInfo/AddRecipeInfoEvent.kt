@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo
 
 sealed class AddRecipeInfoEvent {
-    class AddId(val id: Int): AddRecipeInfoEvent()
+    data class OnChangeName(val value: String): AddRecipeInfoEvent();
+    data class OnChangeDescription(val value: String): AddRecipeInfoEvent();
 }

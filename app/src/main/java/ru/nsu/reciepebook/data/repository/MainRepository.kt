@@ -6,6 +6,7 @@ import retrofit2.HttpException
 import retrofit2.Response
 import ru.nsu.reciepebook.data.api.ApiService
 import ru.nsu.reciepebook.data.model.AuthResponse
+import ru.nsu.reciepebook.data.model.RecipeInfo
 import ru.nsu.reciepebook.data.model.User
 import ru.nsu.reciepebook.util.Constants
 import java.io.File
@@ -15,15 +16,19 @@ class MainRepository(private val api: ApiService) {
     suspend fun login(user: User): Response<AuthResponse> {
         return api.login(user)
     }
+
     suspend fun register(user: User): Response<AuthResponse> {
         return api.register(user)
     }
+
     suspend fun refresh(token: String): Response<AuthResponse> {
         return api.refresh(Constants.AUTH + token)
     }
-    suspend fun uploadImage(image: File): Boolean {
+
+    suspend fun uploadImage(token: String, image: File): Boolean {
         return try {
             api.uploadImage(
+                Constants.AUTH + token,
                 MultipartBody.Part.createFormData(
                     "image",
                     image.name,
@@ -36,5 +41,12 @@ class MainRepository(private val api: ApiService) {
         } catch (e: IOException) {
             false
         }
+    }
+
+    suspend fun createRecipeInfo(token: String, recipeInfo: RecipeInfo): Response<Unit> {
+        return api.createRecipeInfo(
+            Constants.AUTH + token,
+            recipeInfo
+        )
     }
 }

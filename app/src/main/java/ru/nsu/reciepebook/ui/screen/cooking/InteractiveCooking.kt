@@ -12,9 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
+import ru.nsu.reciepebook.ui.theme.ReciepeBookTheme
 
 @Composable
 fun InteractiveCooking(
@@ -49,5 +52,13 @@ fun InteractiveCooking(
                 color = Color.Green
             )
         }
+    }
+}
+
+@Composable
+@Preview
+fun test() {
+    ReciepeBookTheme {
+        InteractiveCooking(CookingState(), {},flow {}, {})
     }
 }

@@ -15,7 +15,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import ru.nsu.reciepebook.data.model.User
-import ru.nsu.reciepebook.data.use_cases.registration.RegisterUseCase
+import ru.nsu.reciepebook.data.use_cases.RegisterUseCase
 import ru.nsu.reciepebook.util.Resource
 import javax.inject.Inject
 

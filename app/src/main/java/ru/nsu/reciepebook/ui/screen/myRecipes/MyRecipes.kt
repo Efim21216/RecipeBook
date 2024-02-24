@@ -23,7 +23,6 @@ fun MyRecipes(
     navigateUp: () -> Unit,
     toRecipe: (Int) -> Unit,
 ) {
-
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
             when (event) {

@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.AddRecipeInfoEvent
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.AddRecipeInfoState
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredientsEvent
@@ -20,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(): ViewModel() {
-    private val _uiStateInfo = MutableStateFlow(AddRecipeInfoState())
+    private val _uiStateInfo = MutableStateFlow(AddRecipeInfoState("", ""))
     val uiStateInfo: StateFlow<AddRecipeInfoState> = _uiStateInfo.asStateFlow()
     private val _uiEventInfo = Channel<UIEventInfo>()
     val uiEventInfo = _uiEventInfo.receiveAsFlow()
@@ -38,7 +39,13 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
         private set
     fun onEventInfo(event: AddRecipeInfoEvent) {
         when (event) {
-            is AddRecipeInfoEvent.AddId -> shareId = event.id
+            is AddRecipeInfoEvent.OnChangeName -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(name = event.value)
+            }
+
+            is AddRecipeInfoEvent.OnChangeDescription -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(description = event.value)
+            }
         }
     }
     fun onEventStep(event: AddRecipeStepEvent) {

@@ -7,6 +7,8 @@
     <string name="enter_email">Введите почту</string>
     <string name="enter_password">Введите пароль</string>
     <string name="entry">Вход</string>
+    <string name="name">Название</string>
+    <string name="description">Описание</string>
     <string name="add_recipe">Добавление рецепта</string>
     <string name="recipe_summary">Общая информация</string>
     <string name="ingredients">Ингредиенты</string>

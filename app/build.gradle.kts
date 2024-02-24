@@ -98,6 +98,9 @@ dependencies {
     //collectAsStateWithLifecycle
     implementation("androidx.lifecycle:lifecycle-runtime-compose:2.7.0")
 
+    //for images
+    implementation("io.coil-kt:coil-compose:2.1.0")
+
 }
 kapt {
     correctErrorTypes = true
