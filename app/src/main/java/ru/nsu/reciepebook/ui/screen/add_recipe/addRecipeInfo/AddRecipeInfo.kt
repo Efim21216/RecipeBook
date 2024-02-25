@@ -14,11 +14,15 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Button
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
@@ -27,11 +31,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
+import com.maxkeppeler.sheets.duration.DurationDialog
+import com.maxkeppeler.sheets.duration.models.DurationConfig
+import com.maxkeppeler.sheets.duration.models.DurationFormat
+import com.maxkeppeler.sheets.duration.models.DurationSelection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.OutlinedInputText
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
+import ru.nsu.reciepebook.ui.components.convertLongToTime
 import ru.nsu.reciepebook.ui.components.leftBorder
 import ru.nsu.reciepebook.ui.components.rightBorder
 import ru.nsu.reciepebook.ui.components.topBorder
@@ -43,6 +53,7 @@ import ru.nsu.reciepebook.ui.theme.Primary500
 import ru.nsu.reciepebook.ui.theme.Typography
 
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AddRecipeInfo(
     uiState: AddRecipeInfoState,
@@ -68,6 +79,16 @@ fun AddRecipeInfo(
             modifier = Modifier
                 .padding(padding)
         ) {
+            val timerState = rememberUseCaseState()
+            DurationDialog(
+                state = timerState,
+                selection = DurationSelection { newTimeInSeconds ->
+                    onEvent(AddRecipeInfoEvent.OnChangeTime(newTimeInSeconds))
+                },
+                config = DurationConfig(
+                    timeFormat = DurationFormat.HH_MM_SS
+                )
+            )
             SideBar(3, 2)
             Column(
                 modifier = Modifier
@@ -81,7 +102,6 @@ fun AddRecipeInfo(
                     text = stringResource(id = R.string.name),
                     style = Typography.headlineMedium
                 )
-
                 OutlinedInputText(
                     modifier = Modifier.height(60.dp),
                     value = uiState.name,
@@ -101,6 +121,13 @@ fun AddRecipeInfo(
                     onValueChange = {
                         onEvent(AddRecipeInfoEvent.OnChangeDescription(it))
                     })
+                Button(onClick = { timerState.show() }) {
+                    Text(text = stringResource(id = R.string.enter_time))
+                }
+                if (uiState.timeInSeconds != 0L) {
+                    Text(text = convertLongToTime(uiState.timeInSeconds))
+                }
+
             }
         }
     }

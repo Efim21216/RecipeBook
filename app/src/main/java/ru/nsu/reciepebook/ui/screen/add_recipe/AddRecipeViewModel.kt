@@ -21,7 +21,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class AddRecipeViewModel @Inject constructor(): ViewModel() {
-    private val _uiStateInfo = MutableStateFlow(AddRecipeInfoState("", ""))
+    private val _uiStateInfo = MutableStateFlow(AddRecipeInfoState())
     val uiStateInfo: StateFlow<AddRecipeInfoState> = _uiStateInfo.asStateFlow()
     private val _uiEventInfo = Channel<UIEventInfo>()
     val uiEventInfo = _uiEventInfo.receiveAsFlow()
@@ -45,6 +45,10 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
 
             is AddRecipeInfoEvent.OnChangeDescription -> _uiStateInfo.update {
                 _uiStateInfo.value.copy(description = event.value)
+            }
+
+            is AddRecipeInfoEvent.OnChangeTime -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(timeInSeconds = event.value)
             }
         }
     }

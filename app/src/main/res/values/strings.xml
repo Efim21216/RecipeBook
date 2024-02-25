@@ -6,6 +6,7 @@
     <string name="welcome">Рады вас видеть!</string>
     <string name="enter_email">Введите почту</string>
     <string name="enter_password">Введите пароль</string>
+    <string name="enter_time">Ввести время</string>
     <string name="entry">Вход</string>
     <string name="name">Название</string>
     <string name="description">Описание</string>

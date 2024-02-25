@@ -1,8 +1,12 @@
 package ru.nsu.reciepebook.ui.components
 
+import android.util.Log
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.drawscope.DrawScope
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 fun DrawScope.rightBorder(width: Float, color: Color) {
     val canvasWidth = size.width - width / 2
@@ -41,4 +45,9 @@ fun DrawScope.bottomBorder(width: Float, color: Color) {
         color = color,
         strokeWidth = width
     )
+}
+fun convertLongToTime(time: Long): String {
+    val date = Date(time * 1000)
+    val format = SimpleDateFormat("HH:mm:ss", Locale.US)
+    return format.format(date)
 }

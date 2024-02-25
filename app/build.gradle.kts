@@ -101,6 +101,9 @@ dependencies {
     //for images
     implementation("io.coil-kt:coil-compose:2.1.0")
 
+    //for time picker
+    implementation("com.maxkeppeler.sheets-compose-dialogs:core:1.3.0")
+    implementation("com.maxkeppeler.sheets-compose-dialogs:duration:1.3.0")
 }
 kapt {
     correctErrorTypes = true
