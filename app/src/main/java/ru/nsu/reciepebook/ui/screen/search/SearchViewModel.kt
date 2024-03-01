@@ -6,6 +6,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.update
 
 class SearchViewModel(): ViewModel() {
     private val _uiState = MutableStateFlow(SearchState())
@@ -13,7 +14,11 @@ class SearchViewModel(): ViewModel() {
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
     fun onEvent(event: SearchEvent) {
-
+        when (event) {
+            is SearchEvent.OnChangeName -> _uiState.update {
+                _uiState.value.copy(name = event.value)
+            }
+        }
     }
     sealed class UIEvent {
 

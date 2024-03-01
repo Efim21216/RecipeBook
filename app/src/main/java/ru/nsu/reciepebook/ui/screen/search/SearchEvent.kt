@@ -1,4 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.search
 
-class SearchEvent {
+sealed class SearchEvent {
+    data class OnChangeName(val value: String): SearchEvent()
 }

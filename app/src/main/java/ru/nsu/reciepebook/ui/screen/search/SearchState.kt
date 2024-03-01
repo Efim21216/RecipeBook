@@ -1,4 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.search
 
-class SearchState {
-}
+data class SearchState(
+    val name: String = ""
+)

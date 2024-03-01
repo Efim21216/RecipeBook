@@ -10,13 +10,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import ru.nsu.reciepebook.ui.theme.Primary500
+import ru.nsu.reciepebook.ui.theme.Primary200
 
 @Composable
 fun OutlinedInputText(
     modifier: Modifier = Modifier,
     value: String,
-    label: String? = null,
     hint: String? = null,
     onValueChange: (String) -> Unit,
     isPassword: Boolean = false,
@@ -27,17 +26,14 @@ fun OutlinedInputText(
         value = value,
         onValueChange = {onValueChange(it)},
         placeholder = {
-            Text(text = hint ?: "")
-        },
-        label = {
-            Text(text = label ?: "")
+            Text(text = hint ?: "Hello")
         },
         shape = RoundedCornerShape(8.dp),
         colors = OutlinedTextFieldDefaults.colors(
             focusedContainerColor = MaterialTheme.colorScheme.background,
             unfocusedContainerColor = MaterialTheme.colorScheme.background,
-            focusedBorderColor = Primary500,
-            unfocusedBorderColor = Primary500
+            focusedBorderColor = Primary200,
+            unfocusedBorderColor = Primary200
         ),
         singleLine = isSingleLine,
         visualTransformation = if (isPassword) PasswordVisualTransformation() else VisualTransformation.None

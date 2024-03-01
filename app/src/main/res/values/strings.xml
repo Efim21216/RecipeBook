@@ -8,6 +8,11 @@
     <string name="enter_password">Введите пароль</string>
     <string name="enter_time">Ввести время</string>
     <string name="entry">Вход</string>
+    <string name="find">Найти</string>
+    <string name="breakfast">Завтрак</string>
+    <string name="lunch">Обед</string>
+    <string name="dinner">Ужин</string>
+    <string name="diet_food">Диетические блюда</string>
     <string name="name">Название</string>
     <string name="description">Описание</string>
     <string name="add_recipe">Добавление рецепта</string>
@@ -17,6 +22,7 @@
     <string name="profile">Профиль</string>
     <string name="main">Главная</string>
     <string name="filter">Фильтр</string>
+    <string name="enter_name">Введите название…</string>
     <string name="interactive_cooking">Интерактивная готовка</string>
     <string name="search_results">Результаты поиска</string>
     <string name="search">Поиск</string>

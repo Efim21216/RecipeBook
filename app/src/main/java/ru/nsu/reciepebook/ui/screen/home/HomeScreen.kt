@@ -11,9 +11,12 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.TopBar
+import ru.nsu.reciepebook.ui.theme.ReciepeBookTheme
 
 @Composable
 fun HomeScreen(
@@ -31,7 +34,6 @@ fun HomeScreen(
 
         }
     }
-
     TopBar(
         title = stringResource(id = R.string.main)
     ) { padding ->
@@ -47,5 +49,12 @@ fun HomeScreen(
             }
         }
     }
+}
 
+@Preview
+@Composable
+fun showHomeScreen() {
+    ReciepeBookTheme {
+        HomeScreen(uiState = HomeState(), onEvent = {}, uiEvent = flow {})
+    }
 }
