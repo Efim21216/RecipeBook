@@ -36,7 +36,7 @@ fun InteractiveCooking(
     }
 
     TopBarWithArrow(
-        title = stringResource(id = R.string.add_recipe),
+        title = stringResource(id = R.string.adding_recipe),
         onBackArrow = navigateUp
     ) { padding ->
         Column(
