@@ -20,6 +20,8 @@
     <string name="recipe_summary">Общая информация</string>
     <string name="ingredients">Ингредиенты</string>
     <string name="step">Шаг</string>
+    <string name="new_recipes">Новые рецепты</string>
+    <string name="quick_actions">Быстрые действия</string>
     <string name="edit_profile">Редактировать профиль</string>
     <string name="profile">Профиль</string>
     <string name="subscribers">подписчиков</string>

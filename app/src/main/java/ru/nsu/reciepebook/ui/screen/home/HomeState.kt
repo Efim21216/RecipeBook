@@ -1,3 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.home
 
-class HomeState
+data class HomeState(
+    val recipes: List<ShortRecipeInfo>
+)

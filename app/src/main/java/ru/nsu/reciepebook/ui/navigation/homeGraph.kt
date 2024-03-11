@@ -24,7 +24,10 @@ fun NavGraphBuilder.homeGraph(navController: NavHostController) {
             HomeScreen(
                 uiState = uiState.value,
                 onEvent = viewModel::onEvent,
-                uiEvent = viewModel.uiEvent
+                uiEvent = viewModel.uiEvent,
+                toFavorite = { navController.navigate(Screen.FavoriteScreen.route) },
+                toAddRecipe = { navController.navigate(Screen.AddRecipeInfoScreen.route) },
+                toMyRecipes = { navController.navigate(Screen.MyRecipesScreen.route) }
             )
         }
     }

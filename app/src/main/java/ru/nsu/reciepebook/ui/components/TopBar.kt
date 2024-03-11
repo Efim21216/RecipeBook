@@ -32,7 +32,6 @@ fun TopBar(
                         style = MaterialTheme.typography.headlineLarge
                     )
                 },
-                modifier = Modifier.shadow(elevation = 5.dp),
             )
         },
         content = content
@@ -62,6 +61,7 @@ fun TopBarWithArrow(
                         style = MaterialTheme.typography.headlineLarge
                     )
                 },
+                modifier = Modifier.shadow(elevation = 5.dp),
                 navigationIcon = {
                     IconButton(onClick = onBackArrow) {
                         Icon(

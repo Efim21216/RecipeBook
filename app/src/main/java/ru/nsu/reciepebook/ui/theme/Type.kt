@@ -29,7 +29,7 @@ val Typography = Typography(
     headlineMedium = TextStyle(
         fontFamily = robotoFamily,
         fontSize = 18.sp,
-        fontWeight = FontWeight.Normal
+        fontWeight = FontWeight.Medium
     ),
     headlineSmall = TextStyle(
         fontFamily = robotoFamily,
