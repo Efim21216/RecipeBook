@@ -40,4 +40,6 @@
     <string name="not_yet_reg">Ещё не зарегистрированы?</string>
     <string name="password">Пароль</string>
     <string name="email">Почта</string>
+    <string name="add_ingredient">Добавить ингредиент</string>
+    <string name="next_stage">Перейти к следующему этапу</string>
 </resources>
