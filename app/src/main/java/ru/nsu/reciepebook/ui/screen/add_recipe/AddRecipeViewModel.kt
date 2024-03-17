@@ -50,6 +50,8 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
             is AddRecipeInfoEvent.OnChangeTime -> _uiStateInfo.update {
                 _uiStateInfo.value.copy(timeInSeconds = event.value)
             }
+
+            else -> {}
         }
     }
     fun onEventStep(event: AddRecipeStepEvent) {

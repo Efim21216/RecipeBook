@@ -35,6 +35,7 @@ import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
 import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.SideBar
+import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Black75
 import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Typography
@@ -96,7 +97,8 @@ fun AddRecipeIngredients(
             ) {
                 Text(
                     text = stringResource(id = R.string.add_ingredient),
-                    style = Typography.bodyLarge
+                    style = Typography.bodyLarge,
+                    color = Black500
                 )
             }
             Spacer(modifier = Modifier.height(2.dp))
@@ -113,7 +115,8 @@ fun AddRecipeIngredients(
             ) {
                 Text(
                     text = stringResource(id = R.string.next_stage),
-                    style = Typography.bodyLarge
+                    style = Typography.bodyLarge,
+                    color = Black500
                 )
             }
 

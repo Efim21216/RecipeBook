@@ -6,7 +6,13 @@
     <string name="welcome">Рады вас видеть!</string>
     <string name="enter_email">Введите почту</string>
     <string name="enter_password">Введите пароль</string>
-    <string name="enter_time">Ввести время</string>
+    <string name="complexity">Сложность</string>
+    <string name="time">Время</string>
+    <string name="type_of_dish">Тип блюда</string>
+    <string name="calorie_content">Калорийность</string>
+    <string name="specify_tags">Укажите теги</string>
+    <string name="move_to_next_step">Перейти к следующему этапу</string>
+    <string name="add_photo">Добавить фото</string>
     <string name="entry">Вход</string>
     <string name="find">Найти</string>
     <string name="breakfast">Завтрак</string>
