@@ -8,6 +8,7 @@ data class Ingredient(
 
 data class AddRecipeIngredientsState(
     val ingredients: List<Ingredient> = listOf(),
+    val numberOfSteps: Int = 0,
     /*val newIngredientName: String = "",
     val newIngredientQuantity: String = "",
     val isDialogOpen: Boolean = false*/

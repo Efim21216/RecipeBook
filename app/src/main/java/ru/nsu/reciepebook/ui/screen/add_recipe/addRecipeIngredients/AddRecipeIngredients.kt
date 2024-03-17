@@ -64,7 +64,7 @@ fun AddRecipeIngredients(
             modifier = Modifier
                 .padding(padding)
         ) {
-        SideBar(0, 0)
+        SideBar(uiState.numberOfSteps, -1)
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -164,6 +164,7 @@ fun PreviewAddRecipeIngredients() {
                 Ingredient("Томаты", "100", "кг"),
                 Ingredient("Томаты", "100", "кг"),
                 Ingredient("Огурцы", "50", "г")),
+            numberOfSteps = 4,
         ),
         onEvent = {  },
         uiEvent = flowOf(),
