@@ -1,4 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.favorite
 
-class FavoriteState {
-}
+data class FavoriteState(
+    val duration: Int = 60
+)

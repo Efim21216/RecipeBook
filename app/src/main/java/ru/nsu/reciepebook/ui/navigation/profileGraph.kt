@@ -6,8 +6,11 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import ru.nsu.reciepebook.service.CountdownService
 import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.ui.Screen
+import ru.nsu.reciepebook.ui.screen.favorite.Favorite
+import ru.nsu.reciepebook.ui.screen.favorite.FavoriteViewModel
 import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipes
 import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipesViewModel
 import ru.nsu.reciepebook.ui.screen.profile.ProfileScreen
@@ -16,7 +19,10 @@ import ru.nsu.reciepebook.ui.screen.recipeInfo.composableRecipeInfo
 import ru.nsu.reciepebook.util.Constants
 
 
-fun NavGraphBuilder.profileGraph(navController: NavHostController) {
+fun NavGraphBuilder.profileGraph(
+    navController: NavHostController,
+    countdownService: CountdownService
+) {
     navigation(
         startDestination = Screen.ProfileScreen.route,
         route = Graph.ProfileGraph.route
@@ -35,6 +41,9 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
                 },
                 toAddRecipeInfo = {
                     navController.navigate(Graph.AddRecipeGraph.route)
+                },
+                toFavorite = {
+                    navController.navigate(Screen.FavoriteScreen.route)
                 }
             )
         }
@@ -50,6 +59,19 @@ fun NavGraphBuilder.profileGraph(navController: NavHostController) {
                 toRecipe = {
                     navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID}=$it")
                 },
+                navigateUp = { navController.navigateUp() }
+            )
+        }
+        composable(
+            route = Screen.FavoriteScreen.route
+        ) {
+            val viewModel = hiltViewModel<FavoriteViewModel>()
+            val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+            Favorite(
+                uiState = uiState.value,
+                onEvent = viewModel::onEvent,
+                uiEvent = viewModel.uiEvent,
+                countdownService = countdownService,
                 navigateUp = { navController.navigateUp() }
             )
         }

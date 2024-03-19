@@ -9,8 +9,8 @@ data class AddRecipeInfoState(
     val itemsComplexity: List<String> = listOf("Легко", "Средне", "Сложно"),
     var selectedIndexComplexity: Int = 0,
     var expandedType: Boolean = false,
-    val itemsType: List<String> = listOf("Десерт"),
+    val itemsType: List<String> = listOf("Завтрак", "Обед", "Ужин", "Десерт"),
     var selectedIndexType: Int = 0,
     var tags: List<String> = listOf("#Быстрее", "#ВеликолепныйОчень"),
-    var inputText: String = "",
+    var tagInput: String = "",
 )

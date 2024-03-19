@@ -2,7 +2,6 @@ package ru.nsu.reciepebook.ui.screen.profile
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -51,6 +50,7 @@ fun ProfileScreen(
     uiEvent: Flow<ProfileViewModel.UIEvent>,
     toMyRecipes: () -> Unit,
     toAddRecipeInfo: () -> Unit,
+    toFavorite: () -> Unit
 ) {
 
     LaunchedEffect(key1 = true) {
@@ -89,7 +89,7 @@ fun ProfileScreen(
             MenuOption(onClick = toMyRecipes,
                 text = stringResource(id = R.string.my_recipes),
                 painter = painterResource(id = R.drawable.icon_my_recipes))
-            MenuOption(onClick = { /*TODO*/ },
+            MenuOption(onClick = toFavorite,
                 text = stringResource(id = R.string.favorite),
                 painter = painterResource(id = R.drawable.icon_favorite))
             MenuOption(onClick = toAddRecipeInfo,
@@ -176,7 +176,8 @@ fun PreviewProfile() {
             uiState = ProfileState(),
             onEvent = {},
             uiEvent = flow {},
-            toMyRecipes = { /*TODO*/ }) {
-        }
+            toMyRecipes = { /*TODO*/ },
+            toFavorite = {},
+            toAddRecipeInfo = {})
     }
 }

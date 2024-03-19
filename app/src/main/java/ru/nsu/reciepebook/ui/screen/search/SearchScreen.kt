@@ -35,7 +35,8 @@ import ru.nsu.reciepebook.ui.theme.Typography
 fun SearchScreen(
     uiState: SearchState,
     onEvent: (SearchEvent) -> Unit,
-    uiEvent: Flow<SearchViewModel.UIEvent>
+    uiEvent: Flow<SearchViewModel.UIEvent>,
+    toFilter: () -> Unit
 ) {
 
     LaunchedEffect(key1 = true) {
@@ -75,7 +76,9 @@ fun SearchScreen(
                     modifier = Modifier
                         .height(40.dp)
                         .width(35.dp)
-                        .clickable { },
+                        .clickable {
+                            toFilter()
+                        },
                     painter = painterResource(id = R.drawable.icon_settings),
                     contentDescription = "Info"
                 )
@@ -146,6 +149,6 @@ fun foodCategory(
 @Composable
 fun showSearchScreen() {
     ReciepeBookTheme {
-        SearchScreen(uiState = SearchState(), onEvent = {}, uiEvent = flow { })
+        SearchScreen(uiState = SearchState(), onEvent = {}, uiEvent = flow { }, toFilter = {})
     }
 }

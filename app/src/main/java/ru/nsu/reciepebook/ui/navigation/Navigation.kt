@@ -5,11 +5,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
+import ru.nsu.reciepebook.service.CountdownService
 import ru.nsu.reciepebook.ui.components.BottomNavigation
 @Composable
 fun Navigation(
     navController: NavHostController,
-    startDestination: String
+    startDestination: String,
+    countdownService: CountdownService
 ) {
     LaunchedEffect(key1 = true) {
         navController.addOnDestinationChangedListener { controller, _, _ ->
@@ -25,7 +27,7 @@ fun Navigation(
             startDestination = startDestination
         ) {
             authGraph(navController)
-            mainGraph(navController)
+            mainGraph(navController, countdownService)
         }
     }
 }

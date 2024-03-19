@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo
 
+import CustomTextField
 import android.annotation.SuppressLint
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult
@@ -10,21 +11,19 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.IntrinsicSize
+import androidx.compose.foundation.layout.ExperimentalLayoutApi
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.isImeVisible
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentSize
-import androidx.compose.foundation.layout.wrapContentWidth
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -32,7 +31,6 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonColors
@@ -40,24 +38,19 @@ import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.ImeAction
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.maxkeppeker.sheets.core.models.base.rememberUseCaseState
@@ -68,11 +61,9 @@ import com.maxkeppeler.sheets.duration.models.DurationSelection
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.R
-import ru.nsu.reciepebook.ui.components.OutlinedButton2
-import ru.nsu.reciepebook.ui.components.OutlinedInputLongKK
+import ru.nsu.reciepebook.ui.components.CustomOutlinedButton
 import ru.nsu.reciepebook.ui.components.OutlinedInputText
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
-import ru.nsu.reciepebook.ui.components.convertLongToTime
 import ru.nsu.reciepebook.ui.components.leftBorder
 import ru.nsu.reciepebook.ui.components.rightBorder
 import ru.nsu.reciepebook.ui.components.topBorder
@@ -86,9 +77,19 @@ import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Surface
 import androidx.compose.material3.TextFieldColors
+import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.text.input.KeyboardType
+import ru.nsu.reciepebook.service.pad
 import ru.nsu.reciepebook.ui.theme.Green100
 import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Primary200
+import kotlin.time.Duration.Companion.seconds
 
 @SuppressLint("ResourceType")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -132,12 +133,12 @@ fun AddRecipeInfo(
                     timeFormat = DurationFormat.HH_MM_SS
                 )
             )
-            SideBar(3, 2)
+            SideBar(3, 2, toAddIngredients)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
                     .fillMaxHeight()
-                    .padding(20.dp, 10.dp, 0.dp, 0.dp)
+                    .padding(20.dp, 10.dp, 20.dp, 10.dp)
                     .verticalScroll(rememberScrollState())
             ) {
 
@@ -145,8 +146,11 @@ fun AddRecipeInfo(
                     text = stringResource(id = R.string.name),
                     style = Typography.headlineMedium
                 )
+                Spacer(modifier = Modifier.height(10.dp))
                 OutlinedInputText(
-                    modifier = Modifier.height(60.dp),
+                    modifier = Modifier
+                        .height(55.dp)
+                        .fillMaxWidth(),
                     value = uiState.name,
                     onValueChange = {
                         onEvent(AddRecipeInfoEvent.OnChangeName(it))
@@ -156,9 +160,11 @@ fun AddRecipeInfo(
                     text = stringResource(id = R.string.description),
                     style = Typography.headlineMedium,
                 )
-
+                Spacer(modifier = Modifier.height(10.dp))
                 OutlinedInputText(
-                    modifier = Modifier.height(140.dp),
+                    modifier = Modifier
+                        .height(140.dp)
+                        .fillMaxWidth(),
                     value = uiState.description,
                     isSingleLine = false,
                     onValueChange = {
@@ -166,90 +172,138 @@ fun AddRecipeInfo(
                     })
                 Spacer(Modifier.height(20.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.complexity),
-                        style = Typography.headlineMedium
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 87.dp),
-                        text = stringResource(id = R.string.time),
-                        style = Typography.headlineMedium
-                    )
-                }
-                Spacer(Modifier.height(12.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    DropdownSelector(
-                        uiState.expandedComplexity, uiState.itemsComplexity,
-                        uiState.selectedIndexComplexity,
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(33.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = Black500
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.complexity),
+                            style = Typography.headlineMedium
                         )
-                        )
-                    OutlinedButton2(
-                        //.padding(start = 87.dp)
-                        onClick = { timerState.show() },
-                        modifier = Modifier
-                            .width(180.dp)
-                            .height(33.dp)
-                            .padding(start = 80.dp),
-                        border = BorderStroke(1.dp, Primary200),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = Black500
-                        )
-                    ) {
-                        if (uiState.timeInSeconds != 0L) {
-                            Text(
-                                modifier = Modifier.padding(start = 87.dp),
-                                text = convertLongToTime(uiState.timeInSeconds)
-                            )
+                        Spacer(Modifier.height(10.dp))
+                        var expandedComplexity by remember {
+                            mutableStateOf(false)
                         }
+                        DropdownSelector(
+                            expanded = expandedComplexity,
+                            items = uiState.itemsComplexity,
+                            selectedIndex = uiState.selectedIndexComplexity,
+                            onOpen = { expandedComplexity = true },
+                            onDismiss = { expandedComplexity = false },
+                            onItemClick = {
+                                expandedComplexity = false
+                                onEvent(AddRecipeInfoEvent.OnChangeComplexity(it))
+                            },
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(45.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Black500
+                            )
+                        )
+                    }
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.type_of_dish),
+                            style = Typography.headlineMedium
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        var expandedType by remember {
+                            mutableStateOf(false)
+                        }
+                        DropdownSelector(
+                            expanded = expandedType,
+                            items = uiState.itemsType,
+                            selectedIndex = uiState.selectedIndexType,
+                            onOpen = { expandedType = true },
+                            onDismiss = { expandedType = false },
+                            onItemClick = {
+                                expandedType = false
+                                onEvent(AddRecipeInfoEvent.OnChangeType(it))
+                            },
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(45.dp),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Black500
+                            )
+                        )
                     }
                 }
+
                 Spacer(Modifier.height(30.dp))
                 Row(
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Top,
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text(
-                        text = stringResource(id = R.string.type_of_dish),
-                        style = Typography.headlineMedium
-                    )
-                    Text(
-                        modifier = Modifier.padding(start = 87.dp),
-                        text = stringResource(id = R.string.calorie_content),
-                        style = Typography.headlineMedium
-                    )
-                }
-                Spacer(Modifier.height(12.dp))
-                Row(
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    DropdownSelector(
-                        uiState.expandedType, uiState.itemsType,
-                        uiState.selectedIndexType,
-                        modifier = Modifier
-                            .width(100.dp)
-                            .height(33.dp),
-                        colors = ButtonDefaults.outlinedButtonColors(
-                            contentColor = Black500
+                    Column(
+                        modifier = Modifier.fillMaxHeight()
+                    ) {
+                        Text(
+                            modifier = Modifier,
+                            text = stringResource(id = R.string.time),
+                            style = Typography.headlineMedium
                         )
-                    )
-                    OutlinedInputLongKK(
-                        modifier = Modifier
-                            .height(20.dp)
-                            .width(180.dp)
-                            .padding(start = 80.dp),
-                        value = uiState.kcal,
-                        isSingleLine = false,
-                        onValueChange = {
-                            onEvent(AddRecipeInfoEvent.OnChangeKcal(it))
-                        })
+                        Spacer(Modifier.height(10.dp))
+                        CustomOutlinedButton(
+                            onClick = { timerState.show() },
+                            modifier = Modifier
+                                .width(120.dp)
+                                .height(45.dp),
+                            border = BorderStroke(1.dp, Primary200),
+                            colors = ButtonDefaults.outlinedButtonColors(
+                                contentColor = Black500
+                            ),
+                            contentPadding = PaddingValues(15.dp, 8.dp)
+                        ) {
+                            uiState.timeInSeconds.seconds.toComponents { h, m, s, _ ->
+                                Text(
+                                    modifier = Modifier
+                                        .fillMaxWidth(),
+                                    style = Typography.bodyLarge,
+                                    text = "${h.pad()}:${m.pad()}:${s.pad()}"
+                                )
+                            }
+                        }
+                    }
+                    Column {
+                        Text(
+                            text = stringResource(id = R.string.calorie_content),
+                            style = Typography.headlineMedium
+                        )
+                        Spacer(Modifier.height(10.dp))
+                        CustomTextField(
+                            modifier = Modifier
+                                .border(1.dp, Primary200, RoundedCornerShape(8.dp))
+                                .width(120.dp)
+                                .height(45.dp),
+                            value = uiState.kcal.toString(),
+                            onValueChange = {
+                                val value = if (it == "") 0 else it.toLong()
+                                onEvent(AddRecipeInfoEvent.OnChangeKcal(value))
+                            },
+                            suffix = {
+                                Text(
+                                    text = "ккал",
+                                    style = Typography.bodyLarge
+                                )
+                            },
+                            innerPadding = PaddingValues(15.dp, 8.dp),
+                            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+                            colors = TextFieldDefaults.colors(
+                                focusedContainerColor = Color.Transparent,
+                                errorContainerColor = Color.Transparent,
+                                unfocusedContainerColor = Color.Transparent,
+                                disabledContainerColor = Color.Transparent,
+                                focusedIndicatorColor = Color.Transparent,
+                                errorIndicatorColor = Color.Transparent,
+                                unfocusedIndicatorColor = Color.Transparent,
+                                disabledIndicatorColor = Color.Transparent,
+                            )
+                        )
+                    }
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 Text(
@@ -257,23 +311,36 @@ fun AddRecipeInfo(
                     style = Typography.headlineMedium
                 )
                 Spacer(Modifier.height(12.dp))
-                TagsInputField(uiState.inputText, uiState.tags,
-                    modifier = Modifier.padding(0.dp),
+                TagsInputField(
+                    inputText = uiState.tagInput,
+                    tags = uiState.tags,
+                    modifier = Modifier
+                        .padding(0.dp)
+                        .fillMaxWidth(),
+                    onChange = {
+                        onEvent(AddRecipeInfoEvent.OnChangeTag(it))
+                    },
+                    addTag = {
+                        onEvent(AddRecipeInfoEvent.OnAddTag(it))
+                    },
+                    removeTag = {
+                        onEvent(AddRecipeInfoEvent.OnRemoveTag(it))
+                    },
+                    clearInput = {
+                        onEvent(AddRecipeInfoEvent.OnClearTag)
+                    },
                     colors = OutlinedTextFieldDefaults.colors(
                         focusedContainerColor = MaterialTheme.colorScheme.background,
                         unfocusedContainerColor = MaterialTheme.colorScheme.background,
                         focusedBorderColor = Primary200,
                         unfocusedBorderColor = Primary200
-                    ))
-                if (uiState.timeInSeconds != 0L) {
-                    Text(text = convertLongToTime(uiState.timeInSeconds))
-                }
+                    )
+                )
                 Spacer(modifier = Modifier.height(20.dp))
                 PhotoPickerButtons(singlePhotoPickerLauncher)
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { /* переход на следующий этап */ },
-
+                    onClick = toAddIngredients,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp, 0.dp),
@@ -281,7 +348,8 @@ fun AddRecipeInfo(
                         containerColor = Green200
                     )
                 ) {
-                    Text(text = stringResource(id = R.string.move_to_next_step),
+                    Text(
+                        text = stringResource(id = R.string.move_to_next_step),
                         style = Typography.headlineMedium,
                         color = Black500
                     )
@@ -313,10 +381,13 @@ fun PhotoPickerButtons(
                 containerColor = Green200
             )
         ) {
-            Icon(painter = painterResource(id = R.drawable.add_photo_svgrepo_com_1),
+            Icon(
+                painter = painterResource(id = R.drawable.add_photo_svgrepo_com_1),
                 contentDescription = "Добавить фото",
-                tint = Black500)
-            Text(text = stringResource(id = R.string.add_photo),
+                tint = Black500
+            )
+            Text(
+                text = stringResource(id = R.string.add_photo),
                 style = Typography.headlineMedium,
                 color = Black500
             )
@@ -325,7 +396,11 @@ fun PhotoPickerButtons(
 }
 
 @Composable
-fun SideBar(countSteps: Int, currentStep: Int) {
+fun SideBar(
+    countSteps: Int,
+    currentStep: Int,
+    toAddIngredients: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxHeight()
@@ -344,7 +419,7 @@ fun SideBar(countSteps: Int, currentStep: Int) {
         Spacer(modifier = Modifier.height(20.dp))
         Icon(painter = painterResource(id = R.drawable.icon_ingridients),
             contentDescription = "Info",
-            modifier = Modifier.clickable { })
+            modifier = Modifier.clickable { toAddIngredients() })
         repeat(countSteps) {
             Spacer(modifier = Modifier.height(20.dp))
             val backgroundColor: Color
@@ -381,28 +456,30 @@ fun DropdownSelector(
     items: List<String>,
     selectedIndex: Int,
     modifier: Modifier,
-    colors : ButtonColors
-){
-    var expanded = expanded;
-    val items = items;
-    var selectedIndex = selectedIndex;
+    colors: ButtonColors,
+    onItemClick: (Int) -> Unit,
+    onOpen: () -> Unit,
+    onDismiss: () -> Unit,
+) {
 
-    OutlinedButton2(
-        //.padding(start = 87.dp)
-        onClick = { expanded = true },
+
+    CustomOutlinedButton(
+        onClick = onOpen,
         modifier = modifier,
         colors = colors,
         border = BorderStroke(1.dp, Primary200),
         contentPadding = PaddingValues(
-            start = 10.dp, top = 4.dp, end = 4.dp, bottom = 4.dp
+            start = 15.dp, end = 4.dp
         )
 
     ) {
-        Icon(painter = painterResource(id = R.drawable.arrow_ios_down),
-            contentDescription = "Info")
+        Icon(
+            painter = painterResource(id = R.drawable.arrow_ios_down),
+            contentDescription = "Info"
+        )
         Text(
             text = items[selectedIndex],
-            style = Typography.headlineSmall,
+            style = Typography.bodyLarge,
             modifier = Modifier.fillMaxWidth()
 
         )
@@ -410,14 +487,13 @@ fun DropdownSelector(
 
     DropdownMenu(
         expanded = expanded,
-        onDismissRequest = { expanded = false },
+        onDismissRequest = onDismiss,
     ) {
         items.forEachIndexed { index, text ->
             DropdownMenuItem(
                 text = { Text(text) },
                 onClick = {
-                    selectedIndex = index
-                    expanded = false
+                    onItemClick(index)
                 }
             )
         }
@@ -453,54 +529,74 @@ fun TagChip(
                 Icon(
                     imageVector = Icons.Default.Close,
                     contentDescription = "Удалить тег",
-                    tint = Black500)
+                    tint = Black500
+                )
             }
         }
     }
 }
+
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun TagsInputField(
     inputText: String,
     tags: List<String>,
     modifier: Modifier,
-    colors: TextFieldColors
+    colors: TextFieldColors,
+    addTag: (String) -> Unit,
+    removeTag: (String) -> Unit,
+    onChange: (String) -> Unit,
+    clearInput: () -> Unit,
 ) {
-    var inputText = inputText;
-    var tags = tags;
-    // Функция для добавления нового тега
-    fun addTag(tag: String) {
-        if (tag.isNotEmpty() && !tags.contains(tag)) {
-            tags = tags + tag
-            inputText = ""
-        }
-    }
 
-    // Функция для удаления существующего тега
-    fun removeTag(tag: String) {
-        tags = tags - tag
+    var isExpanded by remember {
+        mutableStateOf(false)
     }
+    val isShowKeyboard by rememberUpdatedState(WindowInsets.isImeVisible)
 
+    LaunchedEffect(WindowInsets.isImeVisible) {
+        isExpanded = isShowKeyboard && isExpanded
+    }
     Column(modifier = Modifier.fillMaxWidth()) {
-        OutlinedTextField(
-            value = inputText,
-            onValueChange = { inputText = it },
-            singleLine = true,
-            placeholder = { Text("Введите тег...") },
-            modifier = modifier,
-            colors = colors,
-            shape = RoundedCornerShape(8.dp),
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = androidx.compose.ui.text.input.ImeAction.Done),
-            keyboardActions = KeyboardActions(onDone = {
-                addTag(inputText.trim())
-            }),
-            trailingIcon = {
-                if (inputText.isNotEmpty()) {
-                    IconButton(onClick = { inputText = "" }) {
-                        Icon(imageVector = Icons.Default.Close, contentDescription = "Очистить")
+        Text(text = "$isShowKeyboard --- $isExpanded")
+        ExposedDropdownMenuBox(
+            modifier = Modifier.fillMaxWidth(),
+            expanded = isExpanded && isShowKeyboard,
+            onExpandedChange = {
+                isExpanded = !isExpanded
+            }) {
+            OutlinedTextField(
+                value = inputText,
+                onValueChange = { onChange(it) },
+                modifier = Modifier
+                    .menuAnchor()
+                    .onFocusChanged {
+                        isExpanded = it.isFocused
+                    },
+                singleLine = true,
+                placeholder = { Text("Введите тег...") },
+                colors = colors,
+                shape = RoundedCornerShape(8.dp),
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = androidx.compose.ui.text.input.ImeAction.Done),
+                keyboardActions = KeyboardActions(onDone = {
+                    addTag(inputText.trim())
+                }),
+                trailingIcon = {
+                    if (inputText.isNotEmpty()) {
+                        IconButton(onClick = clearInput) {
+                            Icon(imageVector = Icons.Default.Close, contentDescription = "Очистить")
+                        }
                     }
                 }
+            )
+            ExposedDropdownMenu(expanded = isExpanded && isShowKeyboard, onDismissRequest = { isExpanded = false }) {
+                listOf("1", "2", "3", "4").forEach {
+                    DropdownMenuItem(text = { Text(it) }, onClick = { isExpanded = false})
+                }
             }
-        )
+        }
+
+        /*Spacer(modifier = Modifier.height(10.dp))
 
         Column {
             tags.forEach { tag ->
@@ -509,14 +605,15 @@ fun TagsInputField(
                     onRemove = { removeTag(tag) }
                 )
             }
-        }
+        }*/
     }
 }
+
 @Preview
 @Composable
 fun PreviewAddRecipe() {
     AddRecipeInfo(
-        uiState = AddRecipeInfoState("", ""),
+        uiState = AddRecipeInfoState("", "", timeInSeconds = 1000),
         onEvent = {},
         uiEvent = flow {},
         navigateUp = {}) {

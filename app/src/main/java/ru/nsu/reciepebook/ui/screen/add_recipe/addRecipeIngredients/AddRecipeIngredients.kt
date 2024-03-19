@@ -65,7 +65,7 @@ fun AddRecipeIngredients(
             modifier = Modifier
                 .padding(padding)
         ) {
-        SideBar(uiState.numberOfSteps, -1)
+        SideBar(uiState.numberOfSteps, -1){}
         Column(
             modifier = Modifier
                 .fillMaxSize(),

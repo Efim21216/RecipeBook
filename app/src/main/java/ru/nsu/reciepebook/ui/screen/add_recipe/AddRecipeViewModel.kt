@@ -51,7 +51,29 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
                 _uiStateInfo.value.copy(timeInSeconds = event.value)
             }
 
-            else -> {}
+            is AddRecipeInfoEvent.OnChangeComplexity -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(selectedIndexComplexity = event.value)
+            }
+            is AddRecipeInfoEvent.OnChangeKcal -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(kcal = event.value)
+            }
+            is AddRecipeInfoEvent.OnChangeType -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(selectedIndexType = event.value)
+            }
+            is AddRecipeInfoEvent.OnAddTag -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(
+                    tags = _uiStateInfo.value.tags.plus(event.value),
+                    tagInput = "")
+            }
+            is AddRecipeInfoEvent.OnChangeTag -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(tagInput = event.value)
+            }
+            is AddRecipeInfoEvent.OnClearTag -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(tagInput = "")
+            }
+            is AddRecipeInfoEvent.OnRemoveTag -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(tags = _uiStateInfo.value.tags.minus(event.value))
+            }
         }
     }
     fun onEventStep(event: AddRecipeStepEvent) {

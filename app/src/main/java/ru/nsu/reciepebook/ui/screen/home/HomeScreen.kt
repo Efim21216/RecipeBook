@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.screen.home
 
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -23,11 +24,13 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -63,6 +66,12 @@ fun HomeScreen(
                 else -> {}
             }
 
+        }
+    }
+    DisposableEffect(key1 = LocalLifecycleOwner.current) {
+        Log.d("MyTag", "IN DISPOSE")
+        onDispose {
+            Log.d("MyTag", "OUT DISPOSE")
         }
     }
     TopBar(
