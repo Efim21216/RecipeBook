@@ -66,7 +66,12 @@ fun NavGraphBuilder.addRecipeGraph(navController: NavHostController) {
                 onEvent = viewModel::onEventIngredients,
                 uiEvent = viewModel.uiEventIngredients,
                 navigateUp = { navController.navigateUp() },
-                toAddStep = { navController.navigate(Screen.AddRecipeStepScreen.route) }
+                toAddStep = { navController.navigate(Screen.AddRecipeStepScreen.route) },
+                toAddInfo = { navController.navigate(Screen.AddRecipeInfoScreen.route) {
+                    popUpTo(Screen.AddRecipeInfoScreen.route) {
+                        inclusive = true
+                    }
+                } }
             )
         }
     }

@@ -47,5 +47,5 @@
     <string name="password">Пароль</string>
     <string name="email">Почта</string>
     <string name="add_ingredient">Добавить ингредиент</string>
-    <string name="next_stage">Перейти к следующему этапу</string>
+    <string name="next">Далее</string>
 </resources>

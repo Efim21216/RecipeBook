@@ -69,6 +69,9 @@ sealed class WithoutBottomBarScreen(val route: String) {
     data object AddRecipeInfo: WithoutBottomBarScreen(
         route = Screen.AddRecipeInfoScreen.route
     )
+    data object AddRecipeIngredients: WithoutBottomBarScreen(
+        route = Screen.AddRecipeIngredientsScreen.route
+    )
 }
 @Composable
 fun BottomNavigationBar(navController: NavHostController) {
@@ -80,7 +83,8 @@ fun BottomNavigationBar(navController: NavHostController) {
     val screensWithoutBottomBar = listOf(
         WithoutBottomBarScreen.Authorization,
         WithoutBottomBarScreen.Registration,
-        WithoutBottomBarScreen.AddRecipeInfo
+        WithoutBottomBarScreen.AddRecipeInfo,
+        WithoutBottomBarScreen.AddRecipeIngredients
     )
 
     val navBackStackEntry by navController.currentBackStackEntryAsState()

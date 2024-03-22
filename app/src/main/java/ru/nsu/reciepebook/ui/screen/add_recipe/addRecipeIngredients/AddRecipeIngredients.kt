@@ -32,9 +32,9 @@ import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flowOf
 import ru.nsu.reciepebook.R
+import ru.nsu.reciepebook.ui.components.SideBar
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
 import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
-import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.SideBar
 import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Black75
 import ru.nsu.reciepebook.ui.theme.Green200
@@ -46,7 +46,8 @@ fun AddRecipeIngredients(
     onEvent: (AddRecipeIngredientsEvent) -> Unit,
     uiEvent: Flow<AddRecipeViewModel.UIEventIngredients>,
     navigateUp: () -> Unit,
-    toAddStep: () -> Unit
+    toAddStep: () -> Unit,
+    toAddInfo: () -> Unit,
 ) {
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
@@ -65,7 +66,7 @@ fun AddRecipeIngredients(
             modifier = Modifier
                 .padding(padding)
         ) {
-        SideBar(uiState.numberOfSteps, -1){}
+        SideBar(uiState.numberOfSteps, -1, toAddInfo = toAddInfo)
         Column(
             modifier = Modifier
                 .fillMaxSize(),
@@ -114,7 +115,7 @@ fun AddRecipeIngredients(
                 )
             ) {
                 Text(
-                    text = stringResource(id = R.string.next_stage),
+                    text = stringResource(id = R.string.next),
                     style = Typography.bodyLarge,
                     color = Black500
                 )
@@ -172,6 +173,7 @@ fun PreviewAddRecipeIngredients() {
         onEvent = {  },
         uiEvent = flowOf(),
         navigateUp = {  },
-        toAddStep = {  }
+        toAddStep = {  },
+        toAddInfo = {}
     )
 }

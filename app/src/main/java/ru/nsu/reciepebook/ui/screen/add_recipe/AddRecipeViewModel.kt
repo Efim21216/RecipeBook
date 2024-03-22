@@ -17,6 +17,8 @@ import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIng
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredientsState
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStepEvent
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStepState
+import ru.nsu.reciepebook.util.Constants.Companion.ALL_TAGS
+import java.io.File
 import javax.inject.Inject
 
 @HiltViewModel
@@ -62,22 +64,30 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
             }
             is AddRecipeInfoEvent.OnAddTag -> _uiStateInfo.update {
                 _uiStateInfo.value.copy(
-                    tags = _uiStateInfo.value.tags.plus(event.value),
+                    displayedTags = _uiStateInfo.value.displayedTags.plus(event.value),
+                    suggestedTags = ALL_TAGS.take(5),
                     tagInput = "")
             }
-            is AddRecipeInfoEvent.OnChangeTag -> _uiStateInfo.update {
-                _uiStateInfo.value.copy(tagInput = event.value)
+            is AddRecipeInfoEvent.OnChangeInputTag -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(tagInput = event.value,
+                    suggestedTags = ALL_TAGS.filter { it.startsWith("#" + event.value) }.take(5))
             }
             is AddRecipeInfoEvent.OnClearTag -> _uiStateInfo.update {
                 _uiStateInfo.value.copy(tagInput = "")
             }
             is AddRecipeInfoEvent.OnRemoveTag -> _uiStateInfo.update {
-                _uiStateInfo.value.copy(tags = _uiStateInfo.value.tags.minus(event.value))
+                _uiStateInfo.value.copy(displayedTags = _uiStateInfo.value.displayedTags.minus(event.value))
+            }
+
+            is AddRecipeInfoEvent.OnImageChange -> _uiStateInfo.update {
+                _uiStateInfo.value.copy(selectedImageUri = event.value)
             }
         }
     }
+    fun uploadImage() {
+        _uiStateInfo.value.selectedImageUri?.path?.let { File(it) }
+    }
     fun onEventStep(event: AddRecipeStepEvent) {
-
     }
     fun onEventIngredients(event: AddRecipeIngredientsEvent) {
 
