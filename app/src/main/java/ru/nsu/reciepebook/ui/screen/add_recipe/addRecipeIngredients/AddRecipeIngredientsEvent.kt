@@ -1,13 +1,7 @@
 package ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients
 
 sealed class AddRecipeIngredientsEvent {
-
-       /* object AddIngredient : AddRecipeIngredientsEvent()
-        data class IngredientNameChanged(val name: String) : AddRecipeIngredientsEvent()
-        data class IngredientQuantityChanged(val quantity: String) : AddRecipeIngredientsEvent()
-        data class DeleteIngredient(val ingredient: Ingredient) : AddRecipeIngredientsEvent()
-        object ToggleDialog : AddRecipeIngredientsEvent()*/
-
-
-
+        data class IngredientChanged(val value: Ingredient, val id: Int) : AddRecipeIngredientsEvent()
+        data class DeleteIngredient(val id: Int) : AddRecipeIngredientsEvent()
+        data object AddIngredient : AddRecipeIngredientsEvent()
 }

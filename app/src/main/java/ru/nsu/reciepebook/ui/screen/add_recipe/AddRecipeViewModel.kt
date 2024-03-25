@@ -15,6 +15,7 @@ import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.AddRecipeInfoEvent
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.AddRecipeInfoState
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredientsEvent
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredientsState
+import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.Ingredient
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStepEvent
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStepState
 import ru.nsu.reciepebook.util.Constants.Companion.ALL_TAGS
@@ -90,7 +91,25 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
     fun onEventStep(event: AddRecipeStepEvent) {
     }
     fun onEventIngredients(event: AddRecipeIngredientsEvent) {
+        when (event) {
+            is AddRecipeIngredientsEvent.DeleteIngredient -> _uiStateIngredients.update {
+                _uiStateIngredients.value.copy(ingredients = it.ingredients.filterIndexed{idx, _ ->
+                    idx != event.id
+                })
+            }
+            is AddRecipeIngredientsEvent.IngredientChanged -> _uiStateIngredients.update {
+                _uiStateIngredients.value.copy(ingredients = it.ingredients.mapIndexed {idx, it ->
+                    if (idx == event.id)
+                        event.value
+                    else
+                        it
+                })
+            }
 
+            AddRecipeIngredientsEvent.AddIngredient -> _uiStateIngredients.update {
+                _uiStateIngredients.value.copy(ingredients = it.ingredients.plus(Ingredient("", 0f, 1)))
+            }
+        }
     }
     sealed class UIEventInfo {
 

@@ -28,4 +28,14 @@ class Constants {
         const val RESUME_REQUEST_CODE = 103
         val ALL_TAGS = listOf("#быстро","#великолепный","#вкусно","#домашняя","#диета","#здоровая")
     }
+    enum class Measures(val value: String) {
+        KILOGRAM("kilogram"),
+        GRAM("gram"),
+        MILLIGRAM("milligram"),
+        LITER("liter"),
+        MILLILITER("milliliter"),
+        TEE_SPOON("tee_spoon"),
+        TABLE_SPOON("table_spoon"),
+        PIECE("piece")
+    }
 }

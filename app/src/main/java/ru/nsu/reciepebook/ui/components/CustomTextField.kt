@@ -23,15 +23,19 @@ fun CustomTextField(
     colors: TextFieldColors = TextFieldDefaults.colors(),
     suffix: @Composable () -> Unit = {},
     singleLine: Boolean = true,
+    readOnly: Boolean = false,
+    trailingIcon: @Composable (() -> Unit)? = null,
     innerPadding: PaddingValues = TextFieldDefaults.contentPaddingWithoutLabel(),
     textStyle: TextStyle = Typography.bodyLarge,
-    keyboardOptions: KeyboardOptions = KeyboardOptions.Default
+    keyboardOptions: KeyboardOptions = KeyboardOptions.Default,
+    placeholder: @Composable (() -> Unit)? = null,
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val enabled = true
     BasicTextField(
         value = value,
         onValueChange = onValueChange,
+        readOnly = readOnly,
         modifier = modifier
             .indicatorLine(
                 enabled = false,
@@ -51,11 +55,13 @@ fun CustomTextField(
             value = value,
             innerTextField = it,
             enabled = enabled,
+            trailingIcon = trailingIcon,
             singleLine = singleLine,
             visualTransformation = visualTransformation,
             interactionSource = interactionSource,
             contentPadding = innerPadding,
-            suffix = suffix
+            suffix = suffix,
+            placeholder = placeholder
         )
     }
 }
