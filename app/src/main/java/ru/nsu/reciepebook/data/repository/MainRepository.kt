@@ -2,15 +2,14 @@ package ru.nsu.reciepebook.data.repository
 
 import okhttp3.MultipartBody
 import okhttp3.RequestBody.Companion.asRequestBody
-import retrofit2.HttpException
 import retrofit2.Response
 import ru.nsu.reciepebook.data.api.ApiService
 import ru.nsu.reciepebook.data.model.AuthResponse
-import ru.nsu.reciepebook.data.model.RecipeInfo
+import ru.nsu.reciepebook.data.model.RecipeInfoDTO
+import ru.nsu.reciepebook.data.model.StepDTO
 import ru.nsu.reciepebook.data.model.User
 import ru.nsu.reciepebook.util.Constants
 import java.io.File
-import java.io.IOException
 
 class MainRepository(private val api: ApiService) {
     suspend fun login(user: User): Response<AuthResponse> {
@@ -25,28 +24,28 @@ class MainRepository(private val api: ApiService) {
         return api.refresh(Constants.AUTH + token)
     }
 
-    suspend fun uploadImage(token: String, image: File): Boolean {
-        return try {
-            api.uploadImage(
-                Constants.AUTH + token,
-                MultipartBody.Part.createFormData(
-                    "image",
-                    image.name,
-                    image.asRequestBody()
-                )
+    suspend fun uploadRecipeImage(token: String, image: File, id: Int): Response<String> {
+        return api.uploadRecipeImage(
+            Constants.AUTH + token,
+            id,
+            MultipartBody.Part.createFormData(
+                "image",
+                image.name,
+                image.asRequestBody()
             )
-            true
-        } catch (e: HttpException) {
-            false
-        } catch (e: IOException) {
-            false
-        }
+        )
     }
 
-    suspend fun createRecipeInfo(token: String, recipeInfo: RecipeInfo): Response<Unit> {
+    suspend fun createRecipeInfo(token: String, recipeInfoDTO: RecipeInfoDTO): Response<RecipeInfoDTO> {
         return api.createRecipeInfo(
             Constants.AUTH + token,
-            recipeInfo
+            recipeInfoDTO
         )
+    }
+    suspend fun createStep(token: String, step: StepDTO): Response<StepDTO> {
+        return api.createStep(token, step)
+    }
+    suspend fun confirmRecipe(token: String, id: Int): Response<String> {
+        return api.confirmRecipe(token, id)
     }
 }

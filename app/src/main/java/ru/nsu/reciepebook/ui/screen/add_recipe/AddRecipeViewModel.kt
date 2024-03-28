@@ -83,6 +83,10 @@ class AddRecipeViewModel @Inject constructor(): ViewModel() {
             is AddRecipeInfoEvent.OnImageChange -> _uiStateInfo.update {
                 _uiStateInfo.value.copy(selectedImageUri = event.value)
             }
+
+            AddRecipeInfoEvent.OnDone -> {
+
+            }
         }
     }
     fun uploadImage() {

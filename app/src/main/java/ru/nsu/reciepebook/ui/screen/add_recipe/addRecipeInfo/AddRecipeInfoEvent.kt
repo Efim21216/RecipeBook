@@ -14,5 +14,6 @@ sealed class AddRecipeInfoEvent {
     data class OnAddTag(val value: String): AddRecipeInfoEvent()
     data object OnClearTag : AddRecipeInfoEvent()
     data class OnImageChange(val value: Uri?): AddRecipeInfoEvent()
+    data object OnDone : AddRecipeInfoEvent()
 
 }
