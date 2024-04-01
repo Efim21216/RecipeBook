@@ -9,14 +9,12 @@ import androidx.navigation.navigation
 import ru.nsu.reciepebook.service.CountdownService
 import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.ui.Screen
+import ru.nsu.reciepebook.ui.navigation.screens.myRecipesSearch
 import ru.nsu.reciepebook.ui.screen.favorite.Favorite
 import ru.nsu.reciepebook.ui.screen.favorite.FavoriteViewModel
-import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipes
-import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipesViewModel
 import ru.nsu.reciepebook.ui.screen.profile.ProfileScreen
 import ru.nsu.reciepebook.ui.screen.profile.ProfileViewModel
 import ru.nsu.reciepebook.ui.screen.recipeInfo.composableRecipeInfo
-import ru.nsu.reciepebook.util.Constants
 
 
 fun NavGraphBuilder.profileGraph(
@@ -48,21 +46,6 @@ fun NavGraphBuilder.profileGraph(
             )
         }
         composable(
-            route = Screen.MyRecipesScreen.route
-        ) {
-            val viewModel = hiltViewModel<MyRecipesViewModel>()
-            val uiState = viewModel.uiState.collectAsStateWithLifecycle()
-            MyRecipes(
-                uiState = uiState.value,
-                onEvent = viewModel::onEvent,
-                uiEvent = viewModel.uiEvent,
-                toRecipe = {
-                    navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID}=$it")
-                },
-                navigateUp = { navController.navigateUp() }
-            )
-        }
-        composable(
             route = Screen.FavoriteScreen.route
         ) {
             val viewModel = hiltViewModel<FavoriteViewModel>()
@@ -75,6 +58,8 @@ fun NavGraphBuilder.profileGraph(
                 navigateUp = { navController.navigateUp() }
             )
         }
+
+        myRecipesSearch(navController)
         addRecipeGraph(navController)
         composableRecipeInfo(navController)
     }

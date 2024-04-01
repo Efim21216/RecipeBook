@@ -26,7 +26,8 @@ fun SearchFilter(
     uiState: SearchFilterState,
     onEvent: (SearchFilterEvent) -> Unit,
     uiEvent: Flow<SearchFilterViewModel.UIEvent>,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    onDone: (Array<String>) -> Unit
 ) {
     var counter by remember {
         mutableStateOf(0)
@@ -58,6 +59,9 @@ fun SearchFilter(
             )
             Button(onClick = { counter++ }) {
                 Text(text = "Increment")
+            }
+            Button(onClick = { onDone(arrayOf("tag1", "tag2", "tag3")) }) {
+                Text(text = "DONE")
             }
         }
     }

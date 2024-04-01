@@ -8,18 +8,19 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.nsu.reciepebook.ui.Screen
-import ru.nsu.reciepebook.util.Constants
+import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 
 fun NavGraphBuilder.composableRecipeInfo(navController: NavHostController) {
     composable(
-        route = Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID}={recipeId}",
+        route = Screen.RecipeInfoScreen.route + "?$RECIPE_ID_ARG={$RECIPE_ID_ARG}",
         arguments = listOf(
-            navArgument(name = Constants.RECIPE_ID) {
+            navArgument(name = RECIPE_ID_ARG) {
                 type = NavType.IntType
                 defaultValue = -1
             }
         )
     ) {
+        //Аргумент получаю внутри view model
         val viewModel = hiltViewModel<RecipeInfoViewModel>()
         val uiState = viewModel.uiState.collectAsStateWithLifecycle()
         RecipeInfo(

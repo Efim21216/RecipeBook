@@ -44,7 +44,8 @@ fun NavGraphBuilder.searchGraph(navController: NavHostController) {
                 uiEvent = viewModel.uiEvent,
                 navigateUp = {
                     navController.navigateUp()
-                }
+                },
+                onDone = {}
             )
         }
         composableRecipeInfo(navController)

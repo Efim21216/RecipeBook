@@ -8,7 +8,8 @@ class Constants {
         const val ACCESS_TOKEN = "Access token"
         const val REFRESH_TOKEN = "Refresh token"
         const val TOKEN_DATA_STORE = "Token data store"
-        const val RECIPE_ID = "recipeId"
+        const val RECIPE_ID_ARG = "recipeId"
+        const val TAGS_ARG = "tags"
 
 
 

@@ -1,0 +1,80 @@
+package ru.nsu.reciepebook.ui.navigation.screens
+
+import android.os.Bundle
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavGraphBuilder
+import androidx.navigation.NavHostController
+import androidx.navigation.NavType
+import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
+import com.google.gson.Gson
+import ru.nsu.reciepebook.ui.Screen
+import ru.nsu.reciepebook.ui.screen.filter.SearchFilter
+import ru.nsu.reciepebook.ui.screen.filter.SearchFilterViewModel
+import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipes
+import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipesViewModel
+import ru.nsu.reciepebook.util.Constants
+import ru.nsu.reciepebook.util.Constants.Companion.TAGS_ARG
+
+fun NavGraphBuilder.myRecipesSearch(
+    navController: NavHostController
+) {
+    composable(
+        route = Screen.MyRecipesScreen.route + "?$TAGS_ARG={$TAGS_ARG}",
+        arguments = listOf(
+            navArgument(name = TAGS_ARG) {
+                type = StringArrayType
+                defaultValue = arrayOf("df")
+            }
+        )
+    ) {
+        val viewModel = hiltViewModel<MyRecipesViewModel>()
+        viewModel.setTags(it.arguments?.getStringArray(TAGS_ARG))
+        val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+        MyRecipes(
+            uiState = uiState.value,
+            onEvent = viewModel::onEvent,
+            uiEvent = viewModel.uiEvent,
+            toRecipe = {
+                navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}=$it")
+            },
+            navigateUp = { navController.navigateUp() },
+            toFilter = { navController.navigate(Screen.FilterScreenMyRecipe.route) }
+        )
+    }
+    composable(
+        route = Screen.FilterScreenMyRecipe.route
+    ) {
+        val viewModel = hiltViewModel<SearchFilterViewModel>()
+        val uiState = viewModel.uiState
+        SearchFilter(
+            uiState = uiState.value,
+            onEvent = viewModel::onEvent,
+            uiEvent = viewModel.uiEvent,
+            navigateUp = { navController.navigateUp() },
+            onDone = {
+                navController.navigate(Screen.MyRecipesScreen.route + "?$TAGS_ARG=${Gson().toJson(it)}") {
+                    popUpTo(Screen.MyRecipesScreen.route)
+                    launchSingleTop = true
+                    restoreState = true
+                }
+            }
+        )
+    }
+}
+val StringArrayType: NavType<Array<String>?> = object: NavType<Array<String>?>(true) {
+    override fun get(bundle: Bundle, key: String): Array<String> {
+        if (bundle.getStringArray(key) == null)
+            return emptyArray()
+        return bundle.getStringArray(key)!!
+    }
+
+    override fun parseValue(value: String): Array<String> {
+        return Gson().fromJson(value, Array<String>::class.java)
+    }
+
+    override fun put(bundle: Bundle, key: String, value: Array<String>?) {
+        bundle.putStringArray(key, value)
+    }
+}

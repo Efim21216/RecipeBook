@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.receiveAsFlow
-import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID
+import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 
 class RecipeInfoViewModel(
     savedStateHandle: SavedStateHandle
@@ -16,7 +16,7 @@ class RecipeInfoViewModel(
     val uiState: StateFlow<RecipeInfoState> = _uiState.asStateFlow()
     private val _uiEvent = Channel<UIEvent>()
     val uiEvent = _uiEvent.receiveAsFlow()
-    val recipeId = savedStateHandle.getStateFlow(RECIPE_ID, -1)
+    val recipeId = savedStateHandle.getStateFlow(RECIPE_ID_ARG, -1)
     fun onEvent(event: RecipeInfoEvent) {
 
     }

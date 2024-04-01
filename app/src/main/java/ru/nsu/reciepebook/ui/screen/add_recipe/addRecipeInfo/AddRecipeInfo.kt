@@ -167,7 +167,11 @@ fun AddRecipeInfo(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
-                    onClick = { onEvent(AddRecipeInfoEvent.OnDone) },
+                    onClick = {
+                        onEvent(AddRecipeInfoEvent.OnDone)
+                        //TODO
+                        toAddIngredients()
+                    },
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(10.dp, 0.dp),

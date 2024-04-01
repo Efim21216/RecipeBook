@@ -16,7 +16,7 @@ import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.AddRecipeInfo
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredients
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStep
-import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID
+import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 
 
 fun NavGraphBuilder.addRecipeGraph(navController: NavHostController) {
@@ -48,7 +48,7 @@ fun NavGraphBuilder.addRecipeGraph(navController: NavHostController) {
                 uiEvent = viewModel.uiEventStep,
                 navigateUp = { navController.navigateUp() },
                 toRecipeInfo = {
-                    navController.navigate(Screen.RecipeInfoScreen.route + "?$RECIPE_ID=${viewModel.shareId}") {
+                    navController.navigate(Screen.RecipeInfoScreen.route + "?$RECIPE_ID_ARG=${viewModel.shareId}") {
                         popUpTo(Graph.AddRecipeGraph.route) {
                             inclusive = true
                         }
