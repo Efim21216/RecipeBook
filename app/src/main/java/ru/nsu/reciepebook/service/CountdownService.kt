@@ -13,6 +13,10 @@ import androidx.compose.animation.ExperimentalAnimationApi
 import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import ru.nsu.reciepebook.util.Constants.Companion.ACTION_SERVICE_CANCEL
 import ru.nsu.reciepebook.util.Constants.Companion.ACTION_SERVICE_START
 import ru.nsu.reciepebook.util.Constants.Companion.ACTION_SERVICE_STOP
@@ -34,15 +38,9 @@ class CountdownService: Service() {
     private val binder = CountdownBinder()
     private var duration: Duration = Duration.ZERO
     private lateinit var timer: Timer
+    private val _timerState = MutableStateFlow(TimerState())
+    val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
 
-    var seconds = mutableStateOf("00")
-        private set
-    var minutes = mutableStateOf("00")
-        private set
-    var hours = mutableStateOf("00")
-        private set
-    var currentState = mutableStateOf(CountdownState.Idle)
-        private set
     override fun onBind(p0: Intent?) = binder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -92,11 +90,15 @@ class CountdownService: Service() {
         updateTimeUnits()
     }
     private fun startCountdown(onTick: (h: String, m: String, s: String) -> Unit) {
-        currentState.value = CountdownState.Started
+        //currentState.value = CountdownState.Started
+        _timerState.update { it.copy(state = CountdownState.Started) }
         timer = fixedRateTimer(initialDelay = 1000L, period = 1000L) {
             duration = duration.minus(1.seconds)
             updateTimeUnits()
-            onTick(hours.value, minutes.value, seconds.value)
+            //onTick(hours.value, minutes.value, seconds.value)
+            onTick(timerState.value.hours,
+                timerState.value.minutes,
+                timerState.value.seconds)
             if (duration == Duration.ZERO)
                 stopStopwatch()
         }
@@ -106,20 +108,27 @@ class CountdownService: Service() {
         if (this::timer.isInitialized) {
             timer.cancel()
         }
-        currentState.value = CountdownState.Stopped
+        //currentState.value = CountdownState.Stopped
+        _timerState.update { it.copy(state = CountdownState.Started) }
     }
 
     private fun cancelStopwatch() {
         duration = Duration.ZERO
-        currentState.value = CountdownState.Idle
+        //currentState.value = CountdownState.Idle
+        _timerState.update { it.copy(state = CountdownState.Idle) }
         updateTimeUnits()
     }
 
     private fun updateTimeUnits() {
         duration.toComponents { hours, minutes, seconds, _ ->
-            this@CountdownService.hours.value = hours.toInt().pad()
-            this@CountdownService.minutes.value = minutes.pad()
-            this@CountdownService.seconds.value = seconds.pad()
+            //this@CountdownService.hours.value = hours.toInt().pad()
+            //this@CountdownService.minutes.value = minutes.pad()
+            //this@CountdownService.seconds.value = seconds.pad()
+            _timerState.update { it.copy(
+                hours = hours.toInt().pad(),
+                minutes = minutes.pad(),
+                seconds = seconds.pad()
+            ) }
         }
     }
 

@@ -1,4 +1,5 @@
 package ru.nsu.reciepebook.ui.screen.cooking
 
-class CookingState {
-}
+data class CookingState(
+    val duration: Int = 60
+)

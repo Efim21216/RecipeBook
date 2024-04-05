@@ -10,14 +10,12 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import com.google.gson.Gson
 import ru.nsu.reciepebook.ui.Screen
-import ru.nsu.reciepebook.ui.screen.filter.SearchFilter
-import ru.nsu.reciepebook.ui.screen.filter.SearchFilterViewModel
 import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipes
 import ru.nsu.reciepebook.ui.screen.myRecipes.MyRecipesViewModel
 import ru.nsu.reciepebook.util.Constants
 import ru.nsu.reciepebook.util.Constants.Companion.TAGS_ARG
 
-fun NavGraphBuilder.myRecipesSearch(
+fun NavGraphBuilder.myRecipes(
     navController: NavHostController
 ) {
     composable(
@@ -43,26 +41,9 @@ fun NavGraphBuilder.myRecipesSearch(
             toFilter = { navController.navigate(Screen.FilterScreenMyRecipe.route) }
         )
     }
-    composable(
-        route = Screen.FilterScreenMyRecipe.route
-    ) {
-        val viewModel = hiltViewModel<SearchFilterViewModel>()
-        val uiState = viewModel.uiState
-        SearchFilter(
-            uiState = uiState.value,
-            onEvent = viewModel::onEvent,
-            uiEvent = viewModel.uiEvent,
-            navigateUp = { navController.navigateUp() },
-            onDone = {
-                navController.navigate(Screen.MyRecipesScreen.route + "?$TAGS_ARG=${Gson().toJson(it)}") {
-                    popUpTo(Screen.MyRecipesScreen.route)
-                    launchSingleTop = true
-                    restoreState = true
-                }
-            }
-        )
-    }
 }
+
+
 val StringArrayType: NavType<Array<String>?> = object: NavType<Array<String>?>(true) {
     override fun get(bundle: Bundle, key: String): Array<String> {
         if (bundle.getStringArray(key) == null)

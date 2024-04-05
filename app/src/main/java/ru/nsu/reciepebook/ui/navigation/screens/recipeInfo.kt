@@ -1,4 +1,4 @@
-package ru.nsu.reciepebook.ui.screen.recipeInfo
+package ru.nsu.reciepebook.ui.navigation.screens
 
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -8,9 +8,11 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.navArgument
 import ru.nsu.reciepebook.ui.Screen
+import ru.nsu.reciepebook.ui.screen.recipeInfo.RecipeInfo
+import ru.nsu.reciepebook.ui.screen.recipeInfo.RecipeInfoViewModel
 import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 
-fun NavGraphBuilder.composableRecipeInfo(navController: NavHostController) {
+fun NavGraphBuilder.recipeInfo(navController: NavHostController) {
     composable(
         route = Screen.RecipeInfoScreen.route + "?$RECIPE_ID_ARG={$RECIPE_ID_ARG}",
         arguments = listOf(

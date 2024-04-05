@@ -12,6 +12,9 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import ru.nsu.reciepebook.ui.Graph
 import ru.nsu.reciepebook.ui.Screen
+import ru.nsu.reciepebook.ui.navigation.screens.addRecipeInfo
+import ru.nsu.reciepebook.ui.navigation.screens.addRecipeIngredients
+import ru.nsu.reciepebook.ui.navigation.screens.addRecipeStep
 import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.AddRecipeInfo
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredients
@@ -24,56 +27,9 @@ fun NavGraphBuilder.addRecipeGraph(navController: NavHostController) {
         startDestination = Screen.AddRecipeInfoScreen.route,
         route = Graph.AddRecipeGraph.route
     ) {
-        composable(
-            route = Screen.AddRecipeInfoScreen.route
-        ) {
-            val viewModel = it.sharedViewModel<AddRecipeViewModel>(navController = navController)
-            val uiState = viewModel.uiStateInfo.collectAsStateWithLifecycle()
-            AddRecipeInfo(
-                uiState = uiState.value,
-                onEvent = viewModel::onEventInfo,
-                uiEvent = viewModel.uiEventInfo,
-                navigateUp = { navController.navigateUp() },
-                toAddIngredients = { navController.navigate(Screen.AddRecipeIngredientsScreen.route) }
-            )
-        }
-        composable(
-            route = Screen.AddRecipeStepScreen.route
-        ) {
-            val viewModel = it.sharedViewModel<AddRecipeViewModel>(navController = navController)
-            val uiState = viewModel.uiStateStep.collectAsStateWithLifecycle()
-            AddRecipeStep(
-                uiState = uiState.value,
-                onEvent = viewModel::onEventStep,
-                uiEvent = viewModel.uiEventStep,
-                navigateUp = { navController.navigateUp() },
-                toRecipeInfo = {
-                    navController.navigate(Screen.RecipeInfoScreen.route + "?$RECIPE_ID_ARG=${viewModel.shareId}") {
-                        popUpTo(Graph.AddRecipeGraph.route) {
-                            inclusive = true
-                        }
-                    }
-                }
-            )
-        }
-        composable(
-                route = Screen.AddRecipeIngredientsScreen.route
-                ) {
-            val viewModel = it.sharedViewModel<AddRecipeViewModel>(navController = navController)
-            val uiState = viewModel.uiStateIngredients.collectAsStateWithLifecycle()
-            AddRecipeIngredients(
-                uiState = uiState.value,
-                onEvent = viewModel::onEventIngredients,
-                uiEvent = viewModel.uiEventIngredients,
-                navigateUp = { navController.navigateUp() },
-                toAddStep = { navController.navigate(Screen.AddRecipeStepScreen.route) },
-                toAddInfo = { navController.navigate(Screen.AddRecipeInfoScreen.route) {
-                    popUpTo(Screen.AddRecipeInfoScreen.route) {
-                        inclusive = true
-                    }
-                } }
-            )
-        }
+        addRecipeInfo(navController)
+        addRecipeStep(navController)
+        addRecipeIngredients(navController)
     }
 }
 @Composable
