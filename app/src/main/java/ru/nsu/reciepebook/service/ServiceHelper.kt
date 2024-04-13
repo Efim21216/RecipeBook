@@ -16,7 +16,7 @@ import ru.nsu.reciepebook.util.Constants.Companion.STOP_REQUEST_CODE
 @ExperimentalAnimationApi
 object ServiceHelper {
 
-    private const val flag =
+    const val flag =
         PendingIntent.FLAG_IMMUTABLE
 
     fun clickPendingIntent(context: Context): PendingIntent {

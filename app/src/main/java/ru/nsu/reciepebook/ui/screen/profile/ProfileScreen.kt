@@ -50,7 +50,8 @@ fun ProfileScreen(
     uiEvent: Flow<ProfileViewModel.UIEvent>,
     toMyRecipes: () -> Unit,
     toAddRecipeInfo: () -> Unit,
-    toFavorite: () -> Unit
+    toFavorite: () -> Unit,
+    toSubscriptions: () -> Unit
 ) {
 
     LaunchedEffect(key1 = true) {
@@ -95,7 +96,7 @@ fun ProfileScreen(
             MenuOption(onClick = toAddRecipeInfo,
                 text = stringResource(id = R.string.add_recipe),
                 painter = painterResource(id = R.drawable.icon_add_recipe))
-            MenuOption(onClick = { /*TODO*/ },
+            MenuOption(onClick = toSubscriptions,
                 text = stringResource(id = R.string.subscriptions),
                 painter = painterResource(id = R.drawable.icon_subscriptions))
             MenuOption(onClick = { /*TODO*/ },
@@ -178,6 +179,7 @@ fun PreviewProfile() {
             uiEvent = flow {},
             toMyRecipes = { /*TODO*/ },
             toFavorite = {},
-            toAddRecipeInfo = {})
+            toAddRecipeInfo = {},
+            toSubscriptions = {})
     }
 }

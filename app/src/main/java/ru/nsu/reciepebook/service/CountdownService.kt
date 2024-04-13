@@ -6,11 +6,12 @@ import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
+import android.media.MediaPlayer
+import android.media.RingtoneManager
 import android.os.Binder
 import android.os.Build
 import android.util.Log
 import androidx.compose.animation.ExperimentalAnimationApi
-import androidx.compose.runtime.mutableStateOf
 import androidx.core.app.NotificationCompat
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -31,6 +32,7 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 @AndroidEntryPoint
 class CountdownService: Service() {
+
     @Inject
     lateinit var notificationManager: NotificationManager
     @Inject
@@ -40,11 +42,14 @@ class CountdownService: Service() {
     private lateinit var timer: Timer
     private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
+    private var player: MediaPlayer? = null
 
     override fun onBind(p0: Intent?) = binder
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-
+        if (player == null)
+            player = MediaPlayer.create(this@CountdownService,
+                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
         when (intent?.getStringExtra(STOPWATCH_STATE)) {
             CountdownState.Started.name -> {
                 setStopButton()
@@ -89,18 +94,19 @@ class CountdownService: Service() {
         duration = durationInSeconds.seconds
         updateTimeUnits()
     }
+    @OptIn(ExperimentalAnimationApi::class)
     private fun startCountdown(onTick: (h: String, m: String, s: String) -> Unit) {
-        //currentState.value = CountdownState.Started
         _timerState.update { it.copy(state = CountdownState.Started) }
         timer = fixedRateTimer(initialDelay = 1000L, period = 1000L) {
             duration = duration.minus(1.seconds)
             updateTimeUnits()
-            //onTick(hours.value, minutes.value, seconds.value)
             onTick(timerState.value.hours,
                 timerState.value.minutes,
                 timerState.value.seconds)
-            if (duration == Duration.ZERO)
+            if (duration == Duration.ZERO){
+                player?.start()
                 stopStopwatch()
+            }
         }
     }
 
@@ -108,22 +114,18 @@ class CountdownService: Service() {
         if (this::timer.isInitialized) {
             timer.cancel()
         }
-        //currentState.value = CountdownState.Stopped
         _timerState.update { it.copy(state = CountdownState.Started) }
     }
 
     private fun cancelStopwatch() {
         duration = Duration.ZERO
-        //currentState.value = CountdownState.Idle
         _timerState.update { it.copy(state = CountdownState.Idle) }
+        player?.stop()
         updateTimeUnits()
     }
 
     private fun updateTimeUnits() {
         duration.toComponents { hours, minutes, seconds, _ ->
-            //this@CountdownService.hours.value = hours.toInt().pad()
-            //this@CountdownService.minutes.value = minutes.pad()
-            //this@CountdownService.seconds.value = seconds.pad()
             _timerState.update { it.copy(
                 hours = hours.toInt().pad(),
                 minutes = minutes.pad(),

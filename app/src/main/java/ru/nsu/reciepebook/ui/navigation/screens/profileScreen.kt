@@ -30,6 +30,9 @@ fun NavGraphBuilder.profileScreen(
             },
             toFavorite = {
                 navController.navigate(Screen.FavoriteScreen.route)
+            },
+            toSubscriptions = {
+                navController.navigate(Graph.CookingGraph.route)
             }
         )
     }

@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import ru.nsu.reciepebook.service.CountdownService
 import ru.nsu.reciepebook.service.CountdownState
 
-class CookingViewModel(): ViewModel() {
+class CookingViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(CookingState())
     val uiState: StateFlow<CookingState> = _uiState.asStateFlow()
     private val _uiEvent = Channel<UIEvent>()

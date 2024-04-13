@@ -17,5 +17,6 @@ fun NavGraphBuilder.mainGraph(
         homeGraph(navController)
         profileGraph(navController, countdownService)
         searchGraph(navController)
+        cookingGraph(navController, countdownService)
     }
 }
