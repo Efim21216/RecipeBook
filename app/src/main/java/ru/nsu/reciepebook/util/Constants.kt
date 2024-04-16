@@ -3,7 +3,6 @@ package ru.nsu.reciepebook.util
 class Constants {
     companion object {
         const val BASE_URL = "http://10.0.2.2:8080" //for android
-        //const val BASE_URL = "http://192.168.137.1:8080" //for android
         const val AUTH = "Bearer "
         const val ACCESS_TOKEN = "Access token"
         const val REFRESH_TOKEN = "Refresh token"
@@ -12,15 +11,18 @@ class Constants {
         const val TAGS_ARG = "tags"
 
 
-
         const val ACTION_SERVICE_START = "ACTION_SERVICE_START"
         const val ACTION_SERVICE_STOP = "ACTION_SERVICE_STOP"
         const val ACTION_SERVICE_CANCEL = "ACTION_SERVICE_CANCEL"
 
         const val STOPWATCH_STATE = "STOPWATCH_STATE"
+        const val NAV_DESTINATION = "NAV_DESTINATION"
+        const val STEP_NUMBER = "STEP_NUMBER"
+        const val CLEAR_NOTIFICATION = "CLEAR"
+        const val FROM_MAIN = "FROM_MAIN"
 
-        const val NOTIFICATION_CHANNEL_ID = "STOPWATCH_NOTIFICATION_ID"
-        const val NOTIFICATION_CHANNEL_NAME = "STOPWATCH_NOTIFICATION"
+        const val NOTIFICATION_CHANNEL_ID = "Timer notification"
+        const val NOTIFICATION_CHANNEL_ALARM_ID = "Alarm notification"
         const val NOTIFICATION_ID = 10
 
         const val CLICK_REQUEST_CODE = 100

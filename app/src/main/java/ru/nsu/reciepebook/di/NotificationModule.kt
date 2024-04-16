@@ -31,7 +31,6 @@ object NotificationModule {
             .setOngoing(true)
             .addAction(0, "Stop", ServiceHelper.stopPendingIntent(context))
             .addAction(0, "Cancel", ServiceHelper.cancelPendingIntent(context))
-            .setContentIntent(ServiceHelper.clickPendingIntent(context))
     }
 
     @ServiceScoped

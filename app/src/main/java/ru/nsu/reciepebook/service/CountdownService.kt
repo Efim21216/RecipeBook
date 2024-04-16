@@ -3,6 +3,7 @@ package ru.nsu.reciepebook.service
 import android.annotation.SuppressLint
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.NotificationManager.IMPORTANCE_HIGH
 import android.app.Service
 import android.content.Intent
 import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK
@@ -18,12 +19,15 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.util.Constants.Companion.ACTION_SERVICE_CANCEL
 import ru.nsu.reciepebook.util.Constants.Companion.ACTION_SERVICE_START
 import ru.nsu.reciepebook.util.Constants.Companion.ACTION_SERVICE_STOP
+import ru.nsu.reciepebook.util.Constants.Companion.FROM_MAIN
+import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_CHANNEL_ALARM_ID
 import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_CHANNEL_ID
-import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_CHANNEL_NAME
 import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_ID
+import ru.nsu.reciepebook.util.Constants.Companion.STEP_NUMBER
 import ru.nsu.reciepebook.util.Constants.Companion.STOPWATCH_STATE
 import java.util.Timer
 import javax.inject.Inject
@@ -43,13 +47,16 @@ class CountdownService: Service() {
     private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
     private var player: MediaPlayer? = null
+    private var stepNumber: Int = 0
 
     override fun onBind(p0: Intent?) = binder
 
+    @OptIn(ExperimentalAnimationApi::class)
+    fun setNotificationClick(isRemove: Boolean = false) = notificationBuilder.setContentIntent(ServiceHelper
+        .clickPendingIntent(this@CountdownService, stepNumber, isRemove))
+
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (player == null)
-            player = MediaPlayer.create(this@CountdownService,
-                RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
+        //Обработка кликов по уведомлению
         when (intent?.getStringExtra(STOPWATCH_STATE)) {
             CountdownState.Started.name -> {
                 setStopButton()
@@ -64,15 +71,18 @@ class CountdownService: Service() {
             }
             CountdownState.Canceled.name -> {
                 stopStopwatch()
-                cancelStopwatch()
-                stopForegroundService()
+                stopService()
             }
         }
+        //Обработка действий от приложения
         intent?.action.let {
             when (it) {
                 ACTION_SERVICE_START -> {
                     setStopButton()
                     startForegroundService()
+                    val step = intent?.getIntExtra(STEP_NUMBER, 0)
+                    if (step != null)
+                        stepNumber = step
                     startCountdown { hours, minutes, seconds ->
                         updateNotification(hours = hours, minutes = minutes, seconds = seconds)
                     }
@@ -82,9 +92,17 @@ class CountdownService: Service() {
                     setResumeButton()
                 }
                 ACTION_SERVICE_CANCEL -> {
-                    stopStopwatch()
-                    cancelStopwatch()
-                    stopForegroundService()
+                    val fromMain = intent?.extras?.getBoolean(FROM_MAIN, false)
+                    if (fromMain != null && fromMain
+                        && _timerState.value.state == CountdownState.Canceled) {
+                        stopStopwatch()
+                        stopService()
+                    }
+                    if ((fromMain != null && !fromMain)
+                        || fromMain == null) {
+                        stopStopwatch()
+                        stopService()
+                    }
                 }
             }
         }
@@ -94,7 +112,14 @@ class CountdownService: Service() {
         duration = durationInSeconds.seconds
         updateTimeUnits()
     }
-    @OptIn(ExperimentalAnimationApi::class)
+    private fun stopService() {
+        _timerState.update { it.copy(state = CountdownState.Idle) }
+        player?.stop()
+        player?.release()
+        player = null
+        updateTimeUnits()
+        stopForegroundService()
+    }
     private fun startCountdown(onTick: (h: String, m: String, s: String) -> Unit) {
         _timerState.update { it.copy(state = CountdownState.Started) }
         timer = fixedRateTimer(initialDelay = 1000L, period = 1000L) {
@@ -104,25 +129,23 @@ class CountdownService: Service() {
                 timerState.value.minutes,
                 timerState.value.seconds)
             if (duration == Duration.ZERO){
+                if (player == null)
+                    player = MediaPlayer.create(this@CountdownService,
+                        RingtoneManager.getDefaultUri(RingtoneManager.TYPE_RINGTONE))
                 player?.start()
-                stopStopwatch()
+                doneNotification()
+                stopStopwatch(CountdownState.Canceled)
             }
         }
     }
 
-    private fun stopStopwatch() {
+    private fun stopStopwatch(state: CountdownState = CountdownState.Stopped) {
         if (this::timer.isInitialized) {
             timer.cancel()
         }
-        _timerState.update { it.copy(state = CountdownState.Started) }
+        _timerState.update { it.copy(state = state) }
     }
 
-    private fun cancelStopwatch() {
-        duration = Duration.ZERO
-        _timerState.update { it.copy(state = CountdownState.Idle) }
-        player?.stop()
-        updateTimeUnits()
-    }
 
     private fun updateTimeUnits() {
         duration.toComponents { hours, minutes, seconds, _ ->
@@ -137,9 +160,11 @@ class CountdownService: Service() {
     private fun startForegroundService() {
         createNotificationChannel()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            startForeground(NOTIFICATION_ID, notificationBuilder.build(), FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
+            startForeground(NOTIFICATION_ID,
+                setNotificationClick().build(),
+                FOREGROUND_SERVICE_TYPE_MEDIA_PLAYBACK)
         } else {
-            startForeground(NOTIFICATION_ID, notificationBuilder.build())
+            startForeground(NOTIFICATION_ID, setNotificationClick().build())
         }
     }
 
@@ -151,19 +176,26 @@ class CountdownService: Service() {
 
     private fun createNotificationChannel() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
+            val channelDefault = NotificationChannel(
                 NOTIFICATION_CHANNEL_ID,
-                NOTIFICATION_CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
+                NOTIFICATION_CHANNEL_ID,
+                NotificationManager.IMPORTANCE_LOW
             )
+            val channel = NotificationChannel(
+                NOTIFICATION_CHANNEL_ALARM_ID,
+                NOTIFICATION_CHANNEL_ALARM_ID,
+                IMPORTANCE_HIGH
+            )
+            channel.setSound(null, null)
             notificationManager.createNotificationChannel(channel)
+            notificationManager.createNotificationChannel(channelDefault)
         }
     }
 
     private fun updateNotification(hours: String, minutes: String, seconds: String) {
         notificationManager.notify(
             NOTIFICATION_ID,
-            notificationBuilder.setContentText(
+            setNotificationClick().setContentText(
                 formatTime(
                     hours = hours,
                     minutes = minutes,
@@ -172,11 +204,31 @@ class CountdownService: Service() {
             ).build()
         )
     }
+    @OptIn(ExperimentalAnimationApi::class)
+    private fun doneNotification() {
+        notificationManager.cancel(NOTIFICATION_ID)
+        val notification = NotificationCompat
+            .Builder(this@CountdownService,
+                NOTIFICATION_CHANNEL_ALARM_ID)
+            .setContentTitle("Stopwatch")
+            .setContentText("00:00:00")
+            .setSmallIcon(R.drawable.baseline_timer_24)
+            .setSound(null)
+            .setPriority(IMPORTANCE_HIGH)
+            .setContentIntent(ServiceHelper
+                .clickPendingIntent(this@CountdownService, stepNumber, true))
+            .setOngoing(true).build()
+        notificationManager.notify(
+            NOTIFICATION_ID,
+            notification
+        )
+    }
 
     @SuppressLint("RestrictedApi")
     @OptIn(ExperimentalAnimationApi::class)
     private fun setStopButton() {
-        notificationBuilder.mActions.removeAt(0)
+        if (notificationBuilder.mActions.size > 0)
+            notificationBuilder.mActions.removeAt(0)
         notificationBuilder.mActions.add(
             0,
             NotificationCompat.Action(
@@ -185,12 +237,13 @@ class CountdownService: Service() {
                 ServiceHelper.stopPendingIntent(this)
             )
         )
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_ID, setNotificationClick().build())
     }
     @SuppressLint("RestrictedApi")
     @OptIn(ExperimentalAnimationApi::class)
     private fun setResumeButton() {
-        notificationBuilder.mActions.removeAt(0)
+        if (notificationBuilder.mActions.size > 0)
+            notificationBuilder.mActions.removeAt(0)
         notificationBuilder.mActions.add(
             0,
             NotificationCompat.Action(
@@ -199,7 +252,7 @@ class CountdownService: Service() {
                 ServiceHelper.resumePendingIntent(this)
             )
         )
-        notificationManager.notify(NOTIFICATION_ID, notificationBuilder.build())
+        notificationManager.notify(NOTIFICATION_ID, setNotificationClick().build())
     }
 
     inner class CountdownBinder : Binder() {
@@ -209,6 +262,8 @@ class CountdownService: Service() {
 
     override fun onDestroy() {
         Log.d("MyTag", "DESTROY SERVICE")
+        player?.release()
+        player = null
         super.onDestroy()
     }
 

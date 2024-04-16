@@ -104,7 +104,8 @@ fun InteractiveCooking(
                         ServiceHelper.triggerCountdownService(
                             context = context,
                             action = if (timerState.state == CountdownState.Started) Constants.ACTION_SERVICE_STOP
-                            else Constants.ACTION_SERVICE_START
+                            else Constants.ACTION_SERVICE_START,
+                            stepNumber = 42
                         )
                     }
                 ) {
@@ -120,12 +121,11 @@ fun InteractiveCooking(
                         .weight(1f)
                         .fillMaxHeight(0.8f),
                     onClick = {
-                        ServiceHelper.stopCountdownService(
+                        ServiceHelper.cancelCountdownService(
                             context = context
                         )
                     },
-                    enabled = timerState.seconds != "00" &&
-                            timerState.state != CountdownState.Started
+                    enabled = timerState.state != CountdownState.Idle
                 ) {
                     Text(text = "Cancel")
                 }

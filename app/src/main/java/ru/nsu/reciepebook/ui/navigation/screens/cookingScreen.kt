@@ -27,7 +27,14 @@ fun NavGraphBuilder.cookingScreen(
             onEvent = viewModel::onEvent,
             uiEvent = viewModel.uiEvent,
             navigateUp = {
-                navController.navigateUp()
+                if (navController.previousBackStackEntry?.destination?.route == Screen.ProfileScreen.route)
+                    navController.navigateUp()
+                else
+                    navController.navigate(Screen.ProfileScreen.route) {
+                        popUpTo(Screen.CookingScreen.route) {
+                            inclusive = true
+                        }
+                    }
             }
         )
     }
