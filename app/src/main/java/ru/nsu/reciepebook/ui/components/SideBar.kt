@@ -32,7 +32,8 @@ fun SideBar(
     countSteps: Int,
     currentStep: Int,
     toAddIngredients: () -> Unit = {},
-    toAddInfo: () -> Unit = {}
+    toAddInfo: () -> Unit = {},
+    isCooking: Boolean = false,
 ) {
     Column(
         modifier = Modifier
@@ -49,10 +50,12 @@ fun SideBar(
         Icon(painter = painterResource(id = R.drawable.icon_info),
             contentDescription = "Info",
             modifier = Modifier.clickable { toAddInfo() })
-        Spacer(modifier = Modifier.height(20.dp))
-        Icon(painter = painterResource(id = R.drawable.icon_ingridients),
-            contentDescription = "Info",
-            modifier = Modifier.clickable { toAddIngredients() })
+        if (!isCooking) {
+            Spacer(modifier = Modifier.height(20.dp))
+            Icon(painter = painterResource(id = R.drawable.icon_ingridients),
+                contentDescription = "Info",
+                modifier = Modifier.clickable { toAddIngredients() })
+        }
         repeat(countSteps) {
             Spacer(modifier = Modifier.height(20.dp))
             val backgroundColor: Color
