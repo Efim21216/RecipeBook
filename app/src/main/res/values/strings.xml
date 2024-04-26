@@ -12,6 +12,7 @@
     <string name="calorie_content">Калорийность</string>
     <string name="specify_tags">Укажите теги</string>
     <string name="move_to_next_step">Перейти к следующему этапу</string>
+    <string name="go_to_next_step">Следующий шаг</string>
     <string name="add_photo">Добавить фото</string>
     <string name="entry">Вход</string>
     <string name="find">Найти</string>
@@ -48,4 +49,8 @@
     <string name="email">Почта</string>
     <string name="add_ingredient">Добавить ингредиент</string>
     <string name="next">Далее</string>
+    <string name="complete">Завершить</string>
+    <string name="add_a_timer">Добавить таймер</string>
+    <string name="step_N">Шаг №</string>
+
 </resources>
