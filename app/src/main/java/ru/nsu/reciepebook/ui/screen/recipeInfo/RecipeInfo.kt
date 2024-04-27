@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
@@ -45,6 +46,7 @@ import ru.nsu.reciepebook.ui.theme.Black50
 import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Typography
+import ru.nsu.reciepebook.ui.theme.White
 import ru.nsu.reciepebook.util.Constants
 
 @Composable
@@ -87,7 +89,7 @@ fun RecipeInfo(
                     .fillMaxWidth()
                     .height(250.dp)
             )
-            Spacer(modifier = Modifier.height(10.dp))
+            Spacer(modifier = Modifier.height(15.dp))
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -111,7 +113,7 @@ fun RecipeInfo(
                         .padding(20.dp, 0.dp, 0.dp, 0.dp)
                 )
             }
-            Spacer(modifier = Modifier.height(15.dp))
+            Spacer(modifier = Modifier.height(20.dp))
             Text(
                 text = stringResource(id = R.string.description),
                 style = Typography.headlineMedium
@@ -119,7 +121,8 @@ fun RecipeInfo(
             Spacer(modifier = Modifier.height(10.dp))
             Text(
                 text = uiState.description,
-                style = MaterialTheme.typography.bodyMedium
+                style = MaterialTheme.typography.bodyMedium,
+                modifier = Modifier.padding(10.dp, 0.dp),
             )
             Spacer(modifier = Modifier.height(15.dp))
             Button(
@@ -136,7 +139,7 @@ fun RecipeInfo(
                 Text(
                     text = stringResource(id = R.string.start),
                     style = Typography.bodyLarge,
-                    color = Black500
+                    color = White
                 )
             }
             Spacer(modifier = Modifier.height(20.dp))
@@ -152,8 +155,9 @@ fun RecipeInfo(
             )
             Spacer(modifier = Modifier.height(10.dp))
             Column(modifier = Modifier
-                .background(Black50)
+                .background(Black50,  shape = RoundedCornerShape(18.dp) )
                 .fillMaxWidth()
+
                 .padding(16.dp)) {
                 val items = Constants.Measures.entries.map {
                     when (it) {
@@ -205,7 +209,7 @@ fun RecipeInfo(
                 Text(
                     text = stringResource(id = R.string.Go_steps),
                     style = Typography.bodyLarge,
-                    color = Black500
+                    color = White
                 )
             }
         }
