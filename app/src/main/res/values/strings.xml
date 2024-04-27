@@ -52,5 +52,7 @@
     <string name="complete">Завершить</string>
     <string name="add_a_timer">Добавить таймер</string>
     <string name="step_N">Шаг №</string>
-
+    <string name="start">Начать интерактивную готовку</string>
+    <string name="favourites">Избранное: </string>
+    <string name="Go_steps">Перейти к шагам</string>
 </resources>
