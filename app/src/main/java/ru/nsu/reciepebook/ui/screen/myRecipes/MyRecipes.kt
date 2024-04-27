@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -37,7 +38,7 @@ fun MyRecipes(
     onEvent: (MyRecipesEvent) -> Unit,
     uiEvent: Flow<MyRecipesViewModel.UIEvent>,
     navigateUp: () -> Unit,
-    toRecipe: (Int) -> Unit,
+    toRecipeInfo: (Int) -> Unit,
     toFilter: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
@@ -95,8 +96,10 @@ fun MyRecipes(
             )
             Spacer(modifier = Modifier.height(30.dp))
             LazyColumn {
-                items(uiState.recipes) {
-                    RecipeCard(shortRecipeInfo = it)
+                itemsIndexed(uiState.recipes) { idx, it ->
+                    RecipeCard(
+                        shortRecipeInfo = it,
+                        toRecipeInfo = { toRecipeInfo(idx) })
                 }
             }
         }
@@ -112,6 +115,6 @@ fun PreviewMyRecipes() {
         "Описание рецепта. Первый шаг, второй шаг, третий шаг, четвёртый шаг, пятый шаг, шестой шаг, седьмой шаг"),
             ShortRecipeInfo(title = "Очень длинное название рецепта")
         )), onEvent = {}, uiEvent = flow {},
-            navigateUp = { }, toRecipe = { }, toFilter = {})
+            navigateUp = { }, toRecipeInfo = { }, toFilter = {})
     }
 }

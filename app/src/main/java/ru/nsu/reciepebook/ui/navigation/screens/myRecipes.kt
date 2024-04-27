@@ -34,13 +34,14 @@ fun NavGraphBuilder.myRecipes(
             uiState = uiState.value,
             onEvent = viewModel::onEvent,
             uiEvent = viewModel.uiEvent,
-            toRecipe = {
+            toRecipeInfo = {
                 navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}=$it")
             },
             navigateUp = { navController.navigateUp() },
             toFilter = { navController.navigate(Screen.FilterScreenMyRecipe.route) }
         )
     }
+    recipeInfo(navController)
 }
 
 

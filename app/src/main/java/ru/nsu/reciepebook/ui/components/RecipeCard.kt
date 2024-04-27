@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.components
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -31,7 +32,8 @@ import ru.nsu.reciepebook.ui.theme.Typography
 
 @Composable
 fun RecipeCard(
-    shortRecipeInfo: ShortRecipeInfo
+    shortRecipeInfo: ShortRecipeInfo,
+    toRecipeInfo: () -> Unit
 ) {
     Surface(
         modifier = Modifier
@@ -41,7 +43,8 @@ fun RecipeCard(
             .advancedShadow(
                 offsetX = 2.dp, offsetY = 4.dp,
                 shadowBlurRadius = 3.dp, color = Black75, cornersRadius = 5.dp
-            ),
+            )
+            .clickable { toRecipeInfo() },
         shape = RoundedCornerShape(0.dp, 0.dp, 5.dp, 5.dp)
     ) {
         Column {

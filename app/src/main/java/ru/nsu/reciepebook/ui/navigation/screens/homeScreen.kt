@@ -8,6 +8,7 @@ import androidx.navigation.compose.composable
 import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.screen.home.HomeScreen
 import ru.nsu.reciepebook.ui.screen.home.HomeViewModel
+import ru.nsu.reciepebook.util.Constants
 
 fun NavGraphBuilder.homeScreen(
     navController: NavHostController
@@ -23,7 +24,9 @@ fun NavGraphBuilder.homeScreen(
             uiEvent = viewModel.uiEvent,
             toFavorite = { navController.navigate(Screen.FavoriteScreen.route) },
             toAddRecipe = { navController.navigate(Screen.AddRecipeInfoScreen.route) },
-            toMyRecipes = { navController.navigate(Screen.MyRecipesScreen.route) }
+            toMyRecipes = { navController.navigate(Screen.MyRecipesScreen.route) },
+            toRecipeInfo = { navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}={$it}") }
         )
     }
+    recipeInfo(navController)
 }

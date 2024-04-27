@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.OutlinedButton
@@ -41,6 +42,7 @@ fun HomeScreen(
     toAddRecipe: () -> Unit,
     toFavorite: () -> Unit,
     toMyRecipes: () -> Unit,
+    toRecipeInfo: (Int) -> Unit
 ) {
 
 
@@ -80,8 +82,10 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn {
-                items(uiState.recipes) {
-                    RecipeCard(shortRecipeInfo = it)
+                itemsIndexed(uiState.recipes) {idx, it ->
+                    RecipeCard(
+                        shortRecipeInfo = it,
+                        toRecipeInfo = { toRecipeInfo(idx) })
                 }
             }
         }
@@ -120,6 +124,6 @@ fun showHomeScreen() {
         HomeScreen(uiState = HomeState(listOf(ShortRecipeInfo(description =
         "Описание рецепта. Первый шаг, второй шаг, третий шаг, четвёртый шаг, пятый шаг, шестой шаг, седьмой шаг"),
             ShortRecipeInfo(title = "Очень длинное название рецепта"))), onEvent = {}, uiEvent = flow {},
-            toMyRecipes = {}, toAddRecipe = {}, toFavorite = {})
+            toMyRecipes = {}, toAddRecipe = {}, toFavorite = {}, toRecipeInfo = {})
     }
 }
