@@ -353,10 +353,16 @@ fun PreviewAddRecipeIngredients() {
         uiState = AddRecipeIngredientsState(
             ingredients = listOf(
                 Ingredient("Томаты", 100f, 1),
+                Ingredient("Томаты", 100f, 2),
                 Ingredient("Томаты", 100f, 1),
                 Ingredient("Томаты", 100f, 1),
                 Ingredient("Томаты", 100f, 1),
                 Ingredient("Томаты", 100f, 1),
+                Ingredient("Томаты", 100f, 2),
+                Ingredient("Томаты", 100f, 1),
+                Ingredient("Томаты", 100f, 1),
+                Ingredient("Томаты", 100f, 1),
+
             ),
             numberOfSteps = 4,
         ),
