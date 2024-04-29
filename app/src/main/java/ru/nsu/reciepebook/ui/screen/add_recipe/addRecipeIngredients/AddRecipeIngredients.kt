@@ -61,8 +61,9 @@ fun AddRecipeIngredients(
     onEvent: (AddRecipeIngredientsEvent) -> Unit,
     uiEvent: Flow<AddRecipeViewModel.UIEventIngredients>,
     navigateUp: () -> Unit,
-    toAddStep: () -> Unit,
     toAddInfo: () -> Unit,
+    toStep: (Int) -> Unit,
+    countSteps: Int
 ) {
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
@@ -81,7 +82,9 @@ fun AddRecipeIngredients(
             modifier = Modifier
                 .padding(padding)
         ) {
-            SideBar(uiState.numberOfSteps, -1, toAddInfo = toAddInfo)
+            SideBar(countSteps,
+                -1, toAddInfo = toAddInfo,
+                toStep = toStep)
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -129,7 +132,8 @@ fun AddRecipeIngredients(
                 Spacer(modifier = Modifier.height(2.dp))
                 Button(
                     onClick = {
-
+                        onEvent(AddRecipeIngredientsEvent.AddFirstStep)
+                        toStep(0)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -301,49 +305,6 @@ fun DropdownInputSelector(
             }
         }
     }
-/*
-
-    val options = listOf("Option 1", "Option 2", "Option 3", "Option 4", "Option 5")
-    var expanded by remember { mutableStateOf(false) }
-    var selectedOptionText by remember { mutableStateOf(options[0]) }
-
-    ExposedDropdownMenuBox(
-        expanded = expanded,
-        onExpandedChange = {
-            expanded = !expanded
-        }
-    ) {
-        TextField(
-            readOnly = true,
-            value = selectedOptionText,
-            onValueChange = { },
-            label = { Text("Label") },
-            trailingIcon = {
-                ExposedDropdownMenuDefaults.TrailingIcon(
-                    expanded = expanded
-                )
-            },
-            modifier = Modifier.menuAnchor(),
-            colors = ExposedDropdownMenuDefaults.textFieldColors()
-        )
-        ExposedDropdownMenu(
-            expanded = expanded,
-            onDismissRequest = {
-                expanded = false
-            }
-        ) {
-            options.forEach { selectionOption ->
-                DropdownMenuItem(
-                    onClick = {
-                        selectedOptionText = selectionOption
-                        expanded = false
-                    }, text = {
-                        Text(text = selectionOption)
-                    }
-                )
-            }
-        }
-    }*/
 }
 
 @Preview(showBackground = true)
@@ -363,13 +324,13 @@ fun PreviewAddRecipeIngredients() {
                 Ingredient("Томаты", 100f, 1),
                 Ingredient("Томаты", 100f, 1),
 
-            ),
-            numberOfSteps = 4,
+            )
         ),
         onEvent = { },
         uiEvent = flowOf(),
         navigateUp = { },
-        toAddStep = { },
-        toAddInfo = {}
+        toAddInfo = {},
+        toStep = {},
+        countSteps = 4,
     )
 }

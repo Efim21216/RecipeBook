@@ -27,18 +27,19 @@ class Constants {
 
         const val CLICK_REQUEST_CODE = 100
         const val CANCEL_REQUEST_CODE = 101
+        const val NAME_IMAGE = "image_"
         const val STOP_REQUEST_CODE = 102
         const val RESUME_REQUEST_CODE = 103
         val ALL_TAGS = listOf("#быстро","#великолепный","#вкусно","#домашняя","#диета","#здоровая")
     }
     enum class Measures(val value: String) {
-        KILOGRAM("kilogram"),
-        GRAM("gram"),
-        MILLIGRAM("milligram"),
-        LITER("liter"),
-        MILLILITER("milliliter"),
-        TEE_SPOON("tee_spoon"),
-        TABLE_SPOON("table_spoon"),
-        PIECE("piece")
+        KILOGRAM("KILOGRAM"),
+        GRAM("GRAM"),
+        MILLIGRAM("MILLIGRAM"),
+        LITER("LITER"),
+        MILLILITER("MILLILITER"),
+        TEE_SPOON("TEE_SPOON"),
+        TABLE_SPOON("TABLE_SPOON"),
+        PIECE("PIECE")
     }
 }

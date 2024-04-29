@@ -3,32 +3,28 @@ package ru.nsu.reciepebook.data.use_cases
 import android.util.Log
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import ru.nsu.reciepebook.data.model.RecipeInfoDTO
+import ru.nsu.reciepebook.data.model.StepDTO
 import ru.nsu.reciepebook.data.repository.MainRepository
 import ru.nsu.reciepebook.util.JwtTokenManager
 import ru.nsu.reciepebook.util.Resource
-import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
-class UploadRecipeImageUseCase @Inject constructor(
-    private val repository: MainRepository,
-    private val jwtTokenManager: JwtTokenManager
-) {
-    operator fun invoke(image: File, recipeId: Int): Flow<Resource<String>> = flow {
+class GetRecipeStepsUseCase @Inject constructor(
+    val repository: MainRepository,
+    val jwtTokenManager: JwtTokenManager
+){
+    operator fun invoke(recipeId: Int): Flow<Resource<List<StepDTO>>> = flow {
         try {
             emit(Resource.Loading())
-            Log.d("MyTag", "SEND REQUEST")
-            val response = repository.uploadRecipeImage(jwtTokenManager.getAccessJwt()!!, image, recipeId)
-            Log.d("MyTag", "DONE REQUEST")
+            val response = repository.getSteps(jwtTokenManager.getAccessJwt()!!, recipeId)
             if (response.isSuccessful) emit(Resource.Success(response.body()!!))
-            else emit(Resource.Error("Ошибка при отправке"))
+            else emit(Resource.Error("Ошибка при получении"))
         } catch(e: IOException) {
-            Log.d("MyTag", "err - ${e.message}")
-            Log.d("MyTag", e.toString())
             emit(Resource.Error("Проверьте интернет соединение"))
         } catch(e: Exception) {
-            Log.d("MyTag", "err - ${e.message}")
-            Log.d("MyTag", e.toString())
+            Log.d("MyTag", "exc - ${e.message}")
             emit(Resource.Error("Технические неполадки"))
         }
     }

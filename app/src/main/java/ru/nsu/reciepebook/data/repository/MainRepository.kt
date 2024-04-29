@@ -1,6 +1,8 @@
 package ru.nsu.reciepebook.data.repository
 
+import android.util.Log
 import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.Response
 import ru.nsu.reciepebook.data.api.ApiService
@@ -43,9 +45,38 @@ class MainRepository(private val api: ApiService) {
         )
     }
     suspend fun createStep(token: String, step: StepDTO): Response<StepDTO> {
-        return api.createStep(token, step)
+        return api.createStep(Constants.AUTH + token, step)
     }
     suspend fun confirmRecipe(token: String, id: Int): Response<String> {
-        return api.confirmRecipe(token, id)
+        return api.confirmRecipe(Constants.AUTH + token, id)
+    }
+    suspend fun uploadStepImage(token: String, image: File, id: Int, number: Int): Response<Unit> {
+        return api.uploadStepImage(
+            token = Constants.AUTH + token,
+            id = id,
+            number = number,
+            image = MultipartBody.Part.createFormData(
+                "image",
+                image.name,
+                image.asRequestBody()
+            )
+        )
+    }
+    suspend fun getRecipeInfo(token: String, id: Int): Response<RecipeInfoDTO> {
+        return api.getRecipeInfo(
+            token = Constants.AUTH + token,
+            id = id
+        )
+    }
+    suspend fun getMyRecipes(token: String): Response<List<RecipeInfoDTO>> {
+        return api.getMyRecipes(
+            token = Constants.AUTH + token
+        )
+    }
+    suspend fun getSteps(token: String, id: Int): Response<List<StepDTO>> {
+        return api.getSteps(
+            token = Constants.AUTH + token,
+            id = id
+        )
     }
 }

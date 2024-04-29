@@ -82,10 +82,11 @@ fun HomeScreen(
             )
             Spacer(modifier = Modifier.height(20.dp))
             LazyColumn {
-                itemsIndexed(uiState.recipes) {idx, it ->
+                items(uiState.recipes) {
                     RecipeCard(
                         shortRecipeInfo = it,
-                        toRecipeInfo = { toRecipeInfo(idx) })
+                        toRecipeInfo = { toRecipeInfo(it.id) },
+                        token = uiState.token)
                 }
             }
         }

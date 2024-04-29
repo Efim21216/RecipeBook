@@ -34,6 +34,7 @@ fun SideBar(
     toAddIngredients: () -> Unit = {},
     toAddInfo: () -> Unit = {},
     isCooking: Boolean = false,
+    toStep: (Int) -> Unit = {}
 ) {
     Column(
         modifier = Modifier
@@ -68,7 +69,7 @@ fun SideBar(
                 textColor = Black500
             }
             IconButton(
-                onClick = { },
+                onClick = { toStep(it) },
                 modifier = Modifier
                     .background(
                         color = backgroundColor,

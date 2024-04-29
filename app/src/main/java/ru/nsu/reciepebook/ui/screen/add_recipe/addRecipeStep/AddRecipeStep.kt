@@ -32,6 +32,7 @@ import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Typography
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import ru.nsu.reciepebook.ui.components.SideBar
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.ChooseComplexityAndType
@@ -39,6 +40,7 @@ import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.ChooseTimeAndKcal
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.PhotoPickerButtons
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.TagChip
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.TagsInputField
+import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.createTmpFile
 import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Primary200
 
@@ -49,17 +51,20 @@ fun AddRecipeStep(
     onEvent: (AddRecipeStepEvent) -> Unit,
     uiEvent: Flow<AddRecipeViewModel.UIEventStep>,
     navigateUp: () -> Unit,
-    toRecipeInfo: () -> Unit
+    toAddInfo: () -> Unit,
+    toAddIngredients: () -> Unit,
+    toStep: (Int) -> Unit,
+    toRecipe: (Int) -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
             when (event) {
-                else -> {}
+                is AddRecipeViewModel.UIEventStep.ToRecipe -> toRecipe(event.recipeId)
             }
 
         }
     }
-
+    val context = LocalContext.current
     TopBarWithArrow(
         title = stringResource(id = R.string.step_N) + "${uiState.currentStep + 1}",
         onBackArrow = navigateUp
@@ -69,7 +74,11 @@ fun AddRecipeStep(
                 .padding(padding)
         ) {
 
-            SideBar(uiState.countSteps, uiState.currentStep)
+            SideBar(uiState.steps.size,
+                uiState.currentStep,
+                toAddInfo = toAddInfo,
+                toAddIngredients = toAddIngredients,
+                toStep = toStep)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -87,7 +96,7 @@ fun AddRecipeStep(
                     modifier = Modifier
                         .height(55.dp)
                         .fillMaxWidth(),
-                    value = uiState.name,
+                    value = uiState.steps[uiState.currentStep].name,
                     hint = "Введите название",
                     onValueChange = {
                         onEvent(AddRecipeStepEvent.OnChangeName(it))
@@ -102,7 +111,7 @@ fun AddRecipeStep(
                     modifier = Modifier
                         .height(140.dp)
                         .fillMaxWidth(),
-                    value = uiState.description,
+                    value = uiState.steps[uiState.currentStep].description,
                     hint = "Введите описание",
                     isSingleLine = false,
                     onValueChange = {
@@ -113,18 +122,22 @@ fun AddRecipeStep(
                 val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.PickVisualMedia(),
                 ) { uri ->
-                    onEvent(AddRecipeStepEvent.OnImageChange(uri))
+                    if (uri == null)
+                        return@rememberLauncherForActivityResult
+                    onEvent(AddRecipeStepEvent.OnImageChange(
+                        createTmpFile(context, uri, "step-" +
+                            uiState.currentStep)))
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 PhotoPickerButtons(singlePhotoPickerLauncher)
                 var modifier = Modifier
                     .fillMaxWidth()
-                if (uiState.selectedImageUri != null)
+                if (uiState.steps[uiState.currentStep].selectedImageUri != null)
                     modifier = modifier
                         .height(300.dp)
                         .padding(top = 15.dp)
                 AsyncImage(
-                    model = uiState.selectedImageUri,
+                    model = uiState.steps[uiState.currentStep].selectedImageUri,
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = modifier,
@@ -132,7 +145,7 @@ fun AddRecipeStep(
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
-
+                        onEvent(AddRecipeStepEvent.AddStep)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -150,7 +163,7 @@ fun AddRecipeStep(
                 Spacer(modifier = Modifier.height(10.dp))
                 Button(
                     onClick = {
-
+                        onEvent(AddRecipeStepEvent.OnDone)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
@@ -174,10 +187,13 @@ fun AddRecipeStep(
 @Composable
 fun PreviewAddRecipe() {
     AddRecipeStep(
-        uiState = AddRecipeStepState("", "", timeInSeconds = 1000),
+        uiState = AddRecipeStepState(),
         onEvent = {},
         uiEvent = flow {},
         navigateUp = {},
-        toRecipeInfo = {})
+        toAddInfo = {},
+        toStep = {},
+        toAddIngredients = {},
+        toRecipe = {})
 }
 

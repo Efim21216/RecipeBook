@@ -51,7 +51,7 @@ fun ChooseTimeAndKcal2(
         DurationDialog(
             state = timerState,
             selection = DurationSelection { newTimeInSeconds ->
-                onEvent(AddRecipeStepEvent.OnChangeTime(newTimeInSeconds))
+                onEvent(AddRecipeStepEvent.OnChangeTime(newTimeInSeconds.toInt()))
             },
             config = DurationConfig(
                 timeFormat = DurationFormat.HH_MM_SS
@@ -77,7 +77,7 @@ fun ChooseTimeAndKcal2(
                 ),
                 contentPadding = PaddingValues(15.dp, 8.dp)
             ) {
-                uiState.timeInSeconds.seconds.toComponents { h, m, s, _ ->
+                uiState.steps[uiState.currentStep].timeInSeconds.seconds.toComponents { h, m, s, _ ->
                     Text(
                         modifier = Modifier
                             .fillMaxWidth(),

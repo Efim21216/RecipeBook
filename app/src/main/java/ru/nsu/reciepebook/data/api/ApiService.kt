@@ -3,6 +3,7 @@ package ru.nsu.reciepebook.data.api
 import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Multipart
 import retrofit2.http.POST
@@ -28,12 +29,12 @@ interface ApiService {
         @Path("id") id: Int,
         @Part image: MultipartBody.Part
     ): Response<String>
-    @POST
+    @POST("/recipe")
     suspend fun createRecipeInfo(
         @Header("Authorization") token: String,
         @Body recipeInfoDTO: RecipeInfoDTO
     ): Response<RecipeInfoDTO>
-    @POST
+    @POST("/recipe/step")
     suspend fun createStep(
         @Header("Authorization") token: String,
         @Body recipeInfoDTO: StepDTO
@@ -43,4 +44,27 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Path("id") id: Int
     ): Response<String>
+    @GET("/recipe/{id}")
+    suspend fun getRecipeInfo(
+        @Header("Authorization") token: String,
+        @Path("id") id: Int
+    ): Response<RecipeInfoDTO>
+    @GET("/recipe/my")
+    suspend fun getMyRecipes(
+        @Header("Authorization") token: String
+    ): Response<List<RecipeInfoDTO>>
+    @Multipart
+    @POST("/recipe/{recipeId}/step/{number}/image")
+    suspend fun uploadStepImage(
+        @Header("Authorization") token: String,
+        @Path("recipeId") id: Int,
+        @Path("number") number: Int,
+        @Part image: MultipartBody.Part
+    ): Response<Unit>
+
+    @GET("/recipe/{recipeId}/step/all")
+    suspend fun getSteps(
+        @Header("Authorization") token: String,
+        @Path("recipeId") id: Int,
+    ): Response<List<StepDTO>>
 }

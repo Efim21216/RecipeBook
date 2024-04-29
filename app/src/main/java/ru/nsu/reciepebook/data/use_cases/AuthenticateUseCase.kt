@@ -11,7 +11,7 @@ class AuthenticateUseCase @Inject constructor(
     private val repository: MainRepository,
     private val jwtTokenManager: JwtTokenManager
 ) {
-    /*operator fun invoke(): Flow<StartEvent> = flow {
+    operator fun invoke(): Flow<StartEvent> = flow {
         try {
             val ref = jwtTokenManager.getRefreshJwt()
             val refresh = ref ?: return@flow
@@ -25,9 +25,5 @@ class AuthenticateUseCase @Inject constructor(
         finally {
             emit(StartEvent.End)
         }
-    }*/
-    operator fun invoke(): Flow<StartEvent> = flow {
-        //emit(StartEvent.Success)
-        emit(StartEvent.End)
     }
 }

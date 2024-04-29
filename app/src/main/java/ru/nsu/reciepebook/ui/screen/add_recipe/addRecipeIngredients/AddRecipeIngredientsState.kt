@@ -7,6 +7,5 @@ data class Ingredient(
 )
 
 data class AddRecipeIngredientsState(
-    val ingredients: List<Ingredient> = listOf(),
-    val numberOfSteps: Int = 0
+    val ingredients: List<Ingredient> = listOf()
 )

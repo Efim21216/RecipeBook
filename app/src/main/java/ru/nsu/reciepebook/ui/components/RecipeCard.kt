@@ -20,10 +20,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
+import coil.request.ImageRequest
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.screen.home.ShortRecipeInfo
 import ru.nsu.reciepebook.ui.theme.Black500
@@ -33,7 +35,8 @@ import ru.nsu.reciepebook.ui.theme.Typography
 @Composable
 fun RecipeCard(
     shortRecipeInfo: ShortRecipeInfo,
-    toRecipeInfo: () -> Unit
+    toRecipeInfo: () -> Unit,
+    token: String
 ) {
     Surface(
         modifier = Modifier
@@ -64,11 +67,14 @@ fun RecipeCard(
                     modifier = Modifier
                         .height(120.dp)
                         .width(180.dp),
-                    model = shortRecipeInfo.previewImage,
+                    model = ImageRequest.Builder(LocalContext.current)
+                        .data(shortRecipeInfo.previewImage)
+                        .addHeader("Authorization", token)
+                        .build(),
                     error = painterResource(id = R.drawable.image_default_preview),
                     contentDescription = "",
                     contentScale = ContentScale.Crop,
-                    placeholder = painterResource(id = R.drawable.image_default_preview),
+                    placeholder = painterResource(id = R.drawable.image_placeholder),
                 )
             }
             Text(

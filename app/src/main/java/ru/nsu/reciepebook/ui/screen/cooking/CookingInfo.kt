@@ -17,7 +17,6 @@ import androidx.compose.material3.Divider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
@@ -26,17 +25,11 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil.compose.AsyncImage
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.emptyFlow
 import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.ui.components.SideBar
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.Ingredient
 import ru.nsu.reciepebook.ui.screen.cooking.CookingInfoState
-import ru.nsu.reciepebook.ui.screen.recipeInfo.RecipeInfo
-import ru.nsu.reciepebook.ui.screen.recipeInfo.RecipeInfoEvent
-import ru.nsu.reciepebook.ui.screen.recipeInfo.RecipeInfoState
-import ru.nsu.reciepebook.ui.screen.recipeInfo.RecipeInfoViewModel
 import ru.nsu.reciepebook.ui.theme.Black50
 import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Typography
@@ -46,19 +39,10 @@ import ru.nsu.reciepebook.util.Constants
 @Composable
 fun CookingInfo(
     uiState: CookingInfoState,
-   // onEvent: (CookingInfoState) -> Unit,
-    uiEvent: Flow<RecipeInfoViewModel.UIEvent>,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    toStep: (Int) -> Unit
 ) {
     val scrollState = rememberScrollState()
-    LaunchedEffect(key1 = true) {
-        uiEvent.collect { event ->
-            when (event) {
-                else -> {}
-            }
-
-        }
-    }
 
     TopBarWithArrow(
         title = uiState.name,
@@ -68,7 +52,9 @@ fun CookingInfo(
             modifier = Modifier
                 .padding(padding)
         ) {
-            SideBar(uiState.numberOfSteps, -1, toAddInfo = {  })
+            SideBar(uiState.numberOfSteps, -1,
+                toStep = toStep,
+                isCooking = true)
             Column(
                 modifier = Modifier
                     .verticalScroll(scrollState)
@@ -83,8 +69,9 @@ fun CookingInfo(
                     error = painterResource(id = R.drawable.image_default_preview),
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .fillMaxWidth()
                         .height(250.dp)
+                        .fillMaxWidth()
+
                 )
                 Spacer(modifier = Modifier.height(15.dp))
                 Text(
@@ -144,22 +131,24 @@ fun CookingInfo(
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
-                Button(
-                    onClick = {
-                        //
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(10.dp, 0.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Green200
-                    )
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.next),
-                        style = Typography.bodyLarge,
-                        color = White
-                    )
+                if (uiState.numberOfSteps > 0) {
+                    Button(
+                        onClick = {
+                            toStep(0)
+                        },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp, 0.dp),
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = Green200
+                        )
+                    ) {
+                        Text(
+                            text = stringResource(id = R.string.next),
+                            style = Typography.bodyLarge,
+                            color = White
+                        )
+                    }
                 }
             }
         }
@@ -182,13 +171,10 @@ fun CookingInfoPrew() {
             Ingredient("Томаты", 100f, 1),
             Ingredient("Томаты", 100f, 1),
         ))
-    val sampleUiEvent = emptyFlow<RecipeInfoViewModel.UIEvent>()
     val sampleNavigateUp = { }
-
     CookingInfo(
         uiState = sampleUiState,
-      //  onEvent = sampleOnEvent,
-        uiEvent = sampleUiEvent,
-        navigateUp = sampleNavigateUp
+        navigateUp = sampleNavigateUp,
+        toStep = {}
     )
 }

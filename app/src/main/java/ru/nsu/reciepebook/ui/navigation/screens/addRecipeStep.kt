@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.navigation.screens
 
+import android.util.Log
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
@@ -9,6 +10,7 @@ import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.navigation.sharedViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStep
+import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStepEvent
 import ru.nsu.reciepebook.util.Constants
 
 fun NavGraphBuilder.addRecipeStep(
@@ -24,8 +26,17 @@ fun NavGraphBuilder.addRecipeStep(
             onEvent = viewModel::onEventStep,
             uiEvent = viewModel.uiEventStep,
             navigateUp = { navController.navigateUp() },
-            toRecipeInfo = {
-                navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}=${viewModel.shareId}") {
+            toAddInfo = { navController.navigate(Screen.AddRecipeInfoScreen.route) {
+                popUpTo(Screen.AddRecipeInfoScreen.route) {
+                    inclusive = true
+                }
+            } },
+            toStep = {stepNumber ->
+                viewModel.onEventStep(AddRecipeStepEvent.ToStep(stepNumber))
+            },
+            toAddIngredients = { navController.navigate(Screen.AddRecipeIngredientsScreen.route) },
+            toRecipe = {recipeId ->
+                navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}=$recipeId") {
                     popUpTo(Graph.AddRecipeGraph.route) {
                         inclusive = true
                     }

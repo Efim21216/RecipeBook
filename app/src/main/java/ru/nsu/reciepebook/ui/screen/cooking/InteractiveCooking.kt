@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.screen.cooking
 
+import android.util.Log
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.ContentTransform
 import androidx.compose.animation.ExperimentalAnimationApi
@@ -9,27 +10,19 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutVertically
 import androidx.compose.animation.togetherWith
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -45,17 +38,13 @@ import coil.request.ImageRequest
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import ru.nsu.reciepebook.R
-import ru.nsu.reciepebook.service.CountdownState
-import ru.nsu.reciepebook.service.ServiceHelper
 import ru.nsu.reciepebook.service.TimerState
 import ru.nsu.reciepebook.ui.components.SideBar
 import ru.nsu.reciepebook.ui.components.TopBarWithArrow
 import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Black75
-import ru.nsu.reciepebook.ui.theme.Primary400
 import ru.nsu.reciepebook.ui.theme.ReciepeBookTheme
 import ru.nsu.reciepebook.ui.theme.Typography
-import ru.nsu.reciepebook.util.Constants
 
 @Composable
 fun InteractiveCooking(
@@ -63,7 +52,9 @@ fun InteractiveCooking(
     timerState: TimerState,
     onEvent: (CookingEvent) -> Unit,
     uiEvent: Flow<CookingViewModel.UIEvent>,
-    navigateUp: () -> Unit
+    navigateUp: () -> Unit,
+    toStep: (Int) -> Unit,
+    toInfo: () -> Unit
 ) {
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
@@ -78,13 +69,17 @@ fun InteractiveCooking(
         title = stringResource(id = R.string.interactive_cooking),
         onBackArrow = navigateUp
     ) { padding ->
+        if (uiState.currentStep == -1)
+            return@TopBarWithArrow
         Row(
             modifier = Modifier
                 .padding(padding)
                 .fillMaxSize()
         ) {
-            SideBar(countSteps = 4,
-                currentStep = uiState.step.number,
+            SideBar(countSteps = uiState.steps.size,
+                currentStep = uiState.currentStep,
+                toAddInfo = toInfo,
+                toStep = toStep,
                 isCooking = true)
             Column(
                 modifier = Modifier
@@ -93,10 +88,12 @@ fun InteractiveCooking(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
-                    if (uiState.step.imageUrl != null) {
+                    if (uiState.steps[uiState.currentStep].imageUrl != null) {
+                        Log.d("MyTag", "URL -- ${uiState.steps[uiState.currentStep].imageUrl}")
                         AsyncImage(
                             model = ImageRequest.Builder(LocalContext.current)
-                                .data(uiState.step.imageUrl)
+                                .data(uiState.steps[uiState.currentStep].imageUrl)
+                                .addHeader("Authorization", uiState.token)
                                 .crossfade(true)
                                 .build(),
                             contentDescription = null,
@@ -108,17 +105,19 @@ fun InteractiveCooking(
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                     }
-                    Text(text = uiState.step.text, style = Typography.bodyLarge)
+                    Text(text = uiState.steps[uiState.currentStep].text, style = Typography.bodyLarge)
                     Spacer(modifier = Modifier.height(20.dp))
                     TimerPanel(timerState = timerState)
                 }
-                OutlinedButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    onClick = { /*TODO*/ },
-                    shape = RoundedCornerShape(15.dp),) {
-                    Text(text = stringResource(id = R.string.next))
+                if (uiState.currentStep < uiState.steps.size - 1) {
+                    OutlinedButton(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
+                        onClick = { toStep(uiState.currentStep + 1) },
+                        shape = RoundedCornerShape(15.dp),) {
+                        Text(text = stringResource(id = R.string.next))
+                    }
                 }
 
             }
@@ -194,7 +193,7 @@ fun addAnimation(duration: Int = 600): ContentTransform {
 @Preview
 fun test() {
     ReciepeBookTheme {
-        InteractiveCooking(CookingState(step = StepData(1)),
-            TimerState("00", "00", "00"), {},flow {}, {})
+        InteractiveCooking(CookingState(steps = listOf(StepState(1))),
+            TimerState("00", "00", "00"), {},flow {}, {}, {}, {})
     }
 }

@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.navigation.screens
 
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -9,6 +10,7 @@ import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.screen.home.HomeScreen
 import ru.nsu.reciepebook.ui.screen.home.HomeViewModel
 import ru.nsu.reciepebook.util.Constants
+import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 
 fun NavGraphBuilder.homeScreen(
     navController: NavHostController
@@ -25,7 +27,9 @@ fun NavGraphBuilder.homeScreen(
             toFavorite = { navController.navigate(Screen.FavoriteScreen.route) },
             toAddRecipe = { navController.navigate(Screen.AddRecipeInfoScreen.route) },
             toMyRecipes = { navController.navigate(Screen.MyRecipesScreen.route) },
-            toRecipeInfo = { navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}={$it}") }
+            toRecipeInfo = {
+                navController.navigate(Screen.RecipeInfoScreen.route + "?$RECIPE_ID_ARG=$it")
+            }
         )
     }
     recipeInfo(navController)

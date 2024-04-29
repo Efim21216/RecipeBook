@@ -8,12 +8,13 @@ data class Ingredient(
     val measure: Int
 )
 data class RecipeInfoState (
-    val name: String = "",
+    val name: String = "Nikita",
     val imageUrl: String = "",
-    val description: String = "",
+    val description: String = "Описание рецепта",
     val favourite: Int = 0,
     val favouritesString: String = "",
     val ingredients: List<Ingredient> = listOf(),
     val profileImage: String = "",
-    val  author: String = "",
+    val author: String = "",
+    val token: String = "",
 )

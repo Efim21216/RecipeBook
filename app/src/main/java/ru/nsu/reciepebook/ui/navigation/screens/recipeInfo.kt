@@ -29,7 +29,13 @@ fun NavGraphBuilder.recipeInfo(navController: NavHostController) {
             uiState = uiState.value,
             onEvent = viewModel::onEvent,
             uiEvent = viewModel.uiEvent,
-            recipeId = viewModel.recipeId.collectAsStateWithLifecycle().value
-        ) { navController.navigateUp() }
+            toCooking = {
+                navController.navigate(Screen.CookingInfoScreen.route + "?${RECIPE_ID_ARG}=${it
+                    .arguments?.getInt(RECIPE_ID_ARG)}" )
+            },
+            navigateUp = {
+                navController.navigateUp()
+            }
+        )
     }
 }

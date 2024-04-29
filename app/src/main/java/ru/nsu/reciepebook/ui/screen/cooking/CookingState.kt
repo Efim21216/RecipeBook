@@ -1,6 +1,7 @@
 package ru.nsu.reciepebook.ui.screen.cooking
 
 data class CookingState(
-    val duration: Int = 10,
-    val step: StepData = StepData()
+    val steps: List<StepState> = emptyList(),
+    val currentStep: Int = -1,
+    val token: String = ""
 )

@@ -42,7 +42,7 @@ class AuthorizationViewModel @Inject constructor(
         loginUseCase(
             User(
             email = uiState.value.email,
-            password = uiState.value.email
+            password = uiState.value.password
         )
         ).onEach { result ->
             when (result) {

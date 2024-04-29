@@ -1,6 +1,7 @@
 package ru.nsu.reciepebook.di
 
 import android.app.Application
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -9,6 +10,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import retrofit2.converter.scalars.ScalarsConverterFactory
 import ru.nsu.reciepebook.BookApp
 import ru.nsu.reciepebook.data.api.ApiService
 import ru.nsu.reciepebook.data.repository.MainRepository
@@ -36,7 +38,10 @@ object AppModule {
         return Retrofit.Builder()
             .baseUrl(Constants.BASE_URL)
             .client(client)
-            .addConverterFactory(GsonConverterFactory.create())
+            .addConverterFactory(ScalarsConverterFactory.create())
+            .addConverterFactory(GsonConverterFactory.create(
+                GsonBuilder().setLenient().create()
+            ))
             .build()
             .create(ApiService::class.java)
     }

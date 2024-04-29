@@ -11,6 +11,7 @@ sealed class Screen(val route: String) {
     data object FavoriteScreen: Screen(route = "favorite_screen")
     data object SearchResultsScreen: Screen(route = "search_results_screen")
     data object CookingScreen: Screen(route = "cooking_screen")
+    data object CookingInfoScreen: Screen(route = "cooking_info_screen")
     data object MyRecipesScreen: Screen(route = "my_recipes_screen")
     data object RecipeInfoScreen: Screen(route = "recipe_info_screen")
     data object RecipeStepsScreen: Screen(route = "recipe_steps_screen")

@@ -8,6 +8,7 @@ import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.navigation.sharedViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeIngredients.AddRecipeIngredients
+import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeStep.AddRecipeStepEvent
 
 fun NavGraphBuilder.addRecipeIngredients(
     navController: NavHostController
@@ -22,12 +23,17 @@ fun NavGraphBuilder.addRecipeIngredients(
             onEvent = viewModel::onEventIngredients,
             uiEvent = viewModel.uiEventIngredients,
             navigateUp = { navController.navigateUp() },
-            toAddStep = { navController.navigate(Screen.AddRecipeStepScreen.route) },
             toAddInfo = { navController.navigate(Screen.AddRecipeInfoScreen.route) {
                 popUpTo(Screen.AddRecipeInfoScreen.route) {
                     inclusive = true
                 }
-            } }
+            } },
+            toStep = {stepNumber ->
+                viewModel.onEventStep(AddRecipeStepEvent.ToStep(stepNumber))
+                navController.navigate(Screen.AddRecipeStepScreen.route)
+            },
+            countSteps = viewModel.uiStateStep
+                .collectAsStateWithLifecycle().value.steps.size
         )
     }
 }

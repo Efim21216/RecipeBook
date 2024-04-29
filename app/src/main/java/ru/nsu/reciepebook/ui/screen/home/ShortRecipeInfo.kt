@@ -5,5 +5,6 @@ data class ShortRecipeInfo(
     val previewImage: String = "",
     val profileImage: String = "",
     val author: String = "Автор",
-    val description: String = "Описание"
+    val description: String = "Описание",
+    val id: Int = -1
 )

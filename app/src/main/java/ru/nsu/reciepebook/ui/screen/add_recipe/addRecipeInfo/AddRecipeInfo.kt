@@ -1,6 +1,10 @@
 package ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo
 
 import android.annotation.SuppressLint
+import android.content.Context
+import android.content.Intent
+import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -32,10 +36,16 @@ import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Typography
 import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.net.toFile
+import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import ru.nsu.reciepebook.ui.components.SideBar
 import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Primary200
+import ru.nsu.reciepebook.util.Constants.Companion.NAME_IMAGE
+import java.io.File
+import java.io.FileOutputStream
 
 @SuppressLint("ResourceType")
 @Composable
@@ -44,7 +54,9 @@ fun AddRecipeInfo(
     onEvent: (AddRecipeInfoEvent) -> Unit,
     uiEvent: Flow<AddRecipeViewModel.UIEventInfo>,
     navigateUp: () -> Unit,
-    toAddIngredients: () -> Unit
+    toAddIngredients: () -> Unit,
+    toStep: (Int) -> Unit,
+    countSteps: Int,
 ) {
     LaunchedEffect(key1 = true) {
         uiEvent.collect { event ->
@@ -54,6 +66,7 @@ fun AddRecipeInfo(
 
         }
     }
+    val context = LocalContext.current
 
     TopBarWithArrow(
         title = stringResource(id = R.string.recipe_summary),
@@ -64,7 +77,8 @@ fun AddRecipeInfo(
                 .padding(padding)
         ) {
 
-            SideBar(0, 0, toAddIngredients)
+            SideBar(countSteps, 0,
+                toAddIngredients, toStep = toStep)
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -149,7 +163,9 @@ fun AddRecipeInfo(
                 val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.PickVisualMedia(),
                 ) { uri ->
-                    onEvent(AddRecipeInfoEvent.OnImageChange(uri))
+                    if (uri == null)
+                        return@rememberLauncherForActivityResult
+                    onEvent(AddRecipeInfoEvent.OnImageChange(createTmpFile(context, uri, "info")))
                 }
                 Spacer(modifier = Modifier.height(20.dp))
                 PhotoPickerButtons(singlePhotoPickerLauncher)
@@ -168,8 +184,6 @@ fun AddRecipeInfo(
                 Spacer(modifier = Modifier.height(20.dp))
                 Button(
                     onClick = {
-                        onEvent(AddRecipeInfoEvent.OnDone)
-                        //TODO
                         toAddIngredients()
                     },
                     modifier = Modifier
@@ -189,6 +203,16 @@ fun AddRecipeInfo(
         }
     }
 }
+fun createTmpFile(context: Context, uri: Uri, suffix: String): Uri {
+    val photoBytes = context.contentResolver.openInputStream(uri).use {
+        it?.readBytes()
+    }
+    val file = File(context.cacheDir, NAME_IMAGE + suffix)
+    FileOutputStream(file).use {
+        it.write(photoBytes)
+    }
+    return file.toUri()
+}
 
 @Preview
 @Composable
@@ -197,8 +221,8 @@ fun PreviewAddRecipe() {
         uiState = AddRecipeInfoState("", "", timeInSeconds = 1000),
         onEvent = {},
         uiEvent = flow {},
-        navigateUp = {}) {
-
-    }
+        navigateUp = {}, toStep = {},
+        toAddIngredients = {},
+        countSteps = 1)
 }
 

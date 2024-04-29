@@ -10,25 +10,20 @@ import java.io.File
 import java.io.IOException
 import javax.inject.Inject
 
-class UploadRecipeImageUseCase @Inject constructor(
-    private val repository: MainRepository,
-    private val jwtTokenManager: JwtTokenManager
+class UploadStepImageUseCase @Inject constructor(
+    val repository: MainRepository,
+    val jwtTokenManager: JwtTokenManager
 ) {
-    operator fun invoke(image: File, recipeId: Int): Flow<Resource<String>> = flow {
+    operator fun invoke(image: File, recipeId: Int, number: Int): Flow<Resource<Unit>> = flow {
         try {
             emit(Resource.Loading())
-            Log.d("MyTag", "SEND REQUEST")
-            val response = repository.uploadRecipeImage(jwtTokenManager.getAccessJwt()!!, image, recipeId)
-            Log.d("MyTag", "DONE REQUEST")
+            val response = repository.uploadStepImage(jwtTokenManager.getAccessJwt()!!, image, recipeId, number)
             if (response.isSuccessful) emit(Resource.Success(response.body()!!))
             else emit(Resource.Error("Ошибка при отправке"))
         } catch(e: IOException) {
-            Log.d("MyTag", "err - ${e.message}")
-            Log.d("MyTag", e.toString())
             emit(Resource.Error("Проверьте интернет соединение"))
         } catch(e: Exception) {
-            Log.d("MyTag", "err - ${e.message}")
-            Log.d("MyTag", e.toString())
+            Log.d("MyTag", "ex - ${e.message}")
             emit(Resource.Error("Технические неполадки"))
         }
     }
