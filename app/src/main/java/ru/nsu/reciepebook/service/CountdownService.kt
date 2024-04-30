@@ -27,8 +27,10 @@ import ru.nsu.reciepebook.util.Constants.Companion.FROM_MAIN
 import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_CHANNEL_ALARM_ID
 import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_CHANNEL_ID
 import ru.nsu.reciepebook.util.Constants.Companion.NOTIFICATION_ID
+import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 import ru.nsu.reciepebook.util.Constants.Companion.STEP_NUMBER
 import ru.nsu.reciepebook.util.Constants.Companion.STOPWATCH_STATE
+import java.lang.IllegalArgumentException
 import java.util.Timer
 import javax.inject.Inject
 import kotlin.concurrent.fixedRateTimer
@@ -48,12 +50,13 @@ class CountdownService: Service() {
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
     private var player: MediaPlayer? = null
     private var stepNumber: Int = 0
+    private var recipeId: Int = 0
 
     override fun onBind(p0: Intent?) = binder
 
     @OptIn(ExperimentalAnimationApi::class)
     fun setNotificationClick(isRemove: Boolean = false) = notificationBuilder.setContentIntent(ServiceHelper
-        .clickPendingIntent(this@CountdownService, stepNumber, isRemove))
+        .clickPendingIntent(this@CountdownService, stepNumber, recipeId, isRemove))
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         //Обработка кликов по уведомлению
@@ -80,9 +83,12 @@ class CountdownService: Service() {
                 ACTION_SERVICE_START -> {
                     setStopButton()
                     startForegroundService()
-                    val step = intent?.getIntExtra(STEP_NUMBER, 0)
-                    if (step != null)
-                        stepNumber = step
+                    val step = intent?.getIntExtra(STEP_NUMBER, -1)
+                    val recipe = intent?.getIntExtra(RECIPE_ID_ARG, -1)
+                    if (step == -1 || recipe == -1)
+                        throw IllegalArgumentException("Pass step number and recipe id")
+                    stepNumber = step!!
+                    recipeId = recipe!!
                     startCountdown { hours, minutes, seconds ->
                         updateNotification(hours = hours, minutes = minutes, seconds = seconds)
                     }
@@ -110,21 +116,21 @@ class CountdownService: Service() {
     }
     fun setTime(durationInSeconds: Int) {
         duration = durationInSeconds.seconds
-        updateTimeUnits()
+        updateTimeUnitsToDuration()
     }
     private fun stopService() {
         _timerState.update { it.copy(state = CountdownState.Idle) }
         player?.stop()
         player?.release()
         player = null
-        updateTimeUnits()
+        updateTimeUnitsToDuration()
         stopForegroundService()
     }
     private fun startCountdown(onTick: (h: String, m: String, s: String) -> Unit) {
         _timerState.update { it.copy(state = CountdownState.Started) }
         timer = fixedRateTimer(initialDelay = 1000L, period = 1000L) {
             duration = duration.minus(1.seconds)
-            updateTimeUnits()
+            updateTimeUnitsToDuration()
             onTick(timerState.value.hours,
                 timerState.value.minutes,
                 timerState.value.seconds)
@@ -147,7 +153,7 @@ class CountdownService: Service() {
     }
 
 
-    private fun updateTimeUnits() {
+    private fun updateTimeUnitsToDuration() {
         duration.toComponents { hours, minutes, seconds, _ ->
             _timerState.update { it.copy(
                 hours = hours.toInt().pad(),
@@ -216,7 +222,7 @@ class CountdownService: Service() {
             .setSound(null)
             .setPriority(IMPORTANCE_HIGH)
             .setContentIntent(ServiceHelper
-                .clickPendingIntent(this@CountdownService, stepNumber, true))
+                .clickPendingIntent(this@CountdownService, stepNumber, recipeId, true))
             .setOngoing(true).build()
         notificationManager.notify(
             NOTIFICATION_ID,

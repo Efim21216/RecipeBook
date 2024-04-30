@@ -50,6 +50,7 @@ import ru.nsu.reciepebook.ui.theme.Typography
 fun InteractiveCooking(
     uiState: CookingState,
     timerState: TimerState,
+    recipeId: Int,
     onEvent: (CookingEvent) -> Unit,
     uiEvent: Flow<CookingViewModel.UIEvent>,
     navigateUp: () -> Unit,
@@ -107,7 +108,7 @@ fun InteractiveCooking(
                     }
                     Text(text = uiState.steps[uiState.currentStep].text, style = Typography.bodyLarge)
                     Spacer(modifier = Modifier.height(20.dp))
-                    TimerPanel(timerState = timerState)
+                    TimerPanel(timerState = timerState, uiState.currentStep, recipeId = recipeId)
                 }
                 if (uiState.currentStep < uiState.steps.size - 1) {
                     OutlinedButton(
@@ -194,6 +195,6 @@ fun addAnimation(duration: Int = 600): ContentTransform {
 fun test() {
     ReciepeBookTheme {
         InteractiveCooking(CookingState(steps = listOf(StepState(1))),
-            TimerState("00", "00", "00"), {},flow {}, {}, {}, {})
+            TimerState("00", "00", "00"), 0, {},flow {}, {}, {}, {})
     }
 }

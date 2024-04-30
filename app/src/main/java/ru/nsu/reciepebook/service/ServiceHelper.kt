@@ -14,6 +14,7 @@ import ru.nsu.reciepebook.util.Constants.Companion.CLEAR_NOTIFICATION
 import ru.nsu.reciepebook.util.Constants.Companion.CLICK_REQUEST_CODE
 import ru.nsu.reciepebook.util.Constants.Companion.FROM_MAIN
 import ru.nsu.reciepebook.util.Constants.Companion.NAV_DESTINATION
+import ru.nsu.reciepebook.util.Constants.Companion.RECIPE_ID_ARG
 import ru.nsu.reciepebook.util.Constants.Companion.RESUME_REQUEST_CODE
 import ru.nsu.reciepebook.util.Constants.Companion.STEP_NUMBER
 import ru.nsu.reciepebook.util.Constants.Companion.STOPWATCH_STATE
@@ -25,9 +26,10 @@ object ServiceHelper {
     const val flag =
         PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
 
-    fun clickPendingIntent(context: Context, stepNumber: Int, isRemove: Boolean = false): PendingIntent {
+    fun clickPendingIntent(context: Context, stepNumber: Int, recipeId: Int, isRemove: Boolean = false): PendingIntent {
         val clickIntent = Intent(context, MainActivity::class.java).apply {
-            putExtra(NAV_DESTINATION, Screen.CookingScreen.route)
+            putExtra(NAV_DESTINATION, Screen.CookingScreen.route + "?${RECIPE_ID_ARG}=$recipeId" +
+                    "&${STEP_NUMBER}=$stepNumber")
             putExtra(STEP_NUMBER, stepNumber)
             if (isRemove){
                 putExtra(CLEAR_NOTIFICATION, true)
@@ -66,10 +68,11 @@ object ServiceHelper {
         )
     }
 
-    fun triggerCountdownService(context: Context, action: String, stepNumber: Int) {
+    fun triggerCountdownService(context: Context, action: String, stepNumber: Int, recipeId: Int) {
         Intent(context, CountdownService::class.java).apply {
             this.action = action
             putExtra(STEP_NUMBER, stepNumber)
+            putExtra(RECIPE_ID_ARG, recipeId)
             context.startService(this)
         }
     }

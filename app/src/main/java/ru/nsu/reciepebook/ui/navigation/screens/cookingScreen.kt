@@ -45,6 +45,8 @@ fun NavGraphBuilder.cookingScreen(
             uiState = uiState.value,
             timerState = countdownService.timerState
                 .collectAsStateWithLifecycle().value,
+            recipeId = it
+                .arguments?.getInt(Constants.RECIPE_ID_ARG)!!,
             onEvent = viewModel::onEvent,
             uiEvent = viewModel.uiEvent,
             navigateUp = { onBack(navController) },

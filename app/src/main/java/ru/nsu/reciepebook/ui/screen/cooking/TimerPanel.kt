@@ -31,7 +31,9 @@ import ru.nsu.reciepebook.util.Constants
 @OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun TimerPanel(
-    timerState: TimerState
+    timerState: TimerState,
+    stepNumber: Int,
+    recipeId: Int,
 ) {
     val context = LocalContext.current
     Column(
@@ -66,7 +68,8 @@ fun TimerPanel(
                         context = context,
                         action = if (timerState.state == CountdownState.Started) Constants.ACTION_SERVICE_STOP
                         else Constants.ACTION_SERVICE_START,
-                        stepNumber = 42
+                        stepNumber = stepNumber,
+                        recipeId = recipeId
                     )
                 }
             ) {
