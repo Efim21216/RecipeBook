@@ -91,7 +91,7 @@ fun MyRecipes(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(20.dp, 30.dp, 20.dp, 0.dp),
-                onClick = { /*TODO*/ },
+                onClick = { onEvent(MyRecipesEvent.OnDone) },
                 text = stringResource(id = R.string.find)
             )
             Spacer(modifier = Modifier.height(30.dp))

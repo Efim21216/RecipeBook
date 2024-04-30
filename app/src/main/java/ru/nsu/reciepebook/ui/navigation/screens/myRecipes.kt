@@ -23,19 +23,20 @@ fun NavGraphBuilder.myRecipes(
         arguments = listOf(
             navArgument(name = TAGS_ARG) {
                 type = StringArrayType
-                defaultValue = arrayOf("df")
+                defaultValue = emptyArray<String>()
             }
         )
     ) {
         val viewModel = hiltViewModel<MyRecipesViewModel>()
-        viewModel.setTags(it.arguments?.getStringArray(TAGS_ARG))
         val uiState = viewModel.uiState.collectAsStateWithLifecycle()
+        if (it.arguments?.getStringArray(TAGS_ARG) != null)
+            viewModel.setTags(it.arguments?.getStringArray(TAGS_ARG)!!)
         MyRecipes(
             uiState = uiState.value,
             onEvent = viewModel::onEvent,
             uiEvent = viewModel.uiEvent,
-            toRecipeInfo = {
-                navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}=$it")
+            toRecipeInfo = {id ->
+                navController.navigate(Screen.RecipeInfoScreen.route + "?${Constants.RECIPE_ID_ARG}=$id")
             },
             navigateUp = { navController.navigateUp() },
             toFilter = { navController.navigate(Screen.FilterScreenMyRecipe.route) }

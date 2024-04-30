@@ -30,6 +30,7 @@ import ru.nsu.reciepebook.ui.Screen
 import ru.nsu.reciepebook.ui.theme.Black50
 import ru.nsu.reciepebook.ui.theme.Primary200
 import ru.nsu.reciepebook.ui.theme.PurpleGrey80
+import ru.nsu.reciepebook.util.Constants
 
 
 sealed class BottomBarItem(
@@ -73,10 +74,11 @@ sealed class WithoutBottomBarScreen(val route: String) {
         route = Screen.AddRecipeIngredientsScreen.route
     )
     data object InteractiveCooking: WithoutBottomBarScreen(
-        route = Screen.CookingScreen.route
+        route = Screen.CookingScreen.route + "?${Constants.RECIPE_ID_ARG}={${Constants.RECIPE_ID_ARG}}"
+                + "&${Constants.STEP_NUMBER}={${Constants.STEP_NUMBER}}"
     )
     data object CookingInfo: WithoutBottomBarScreen(
-        route = Screen.CookingInfoScreen.route
+        route = Screen.CookingInfoScreen.route+ "?${Constants.RECIPE_ID_ARG}={${Constants.RECIPE_ID_ARG}}"
     )
     data object AddRecipeStep: WithoutBottomBarScreen(
         route = Screen.AddRecipeStepScreen.route

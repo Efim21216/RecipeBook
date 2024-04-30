@@ -52,7 +52,7 @@ class MyRecipesViewModel @Inject constructor(
             }
         }.launchIn(viewModelScope)
     }
-    fun setTags(tags: Array<String>?) {
+    fun setTags(tags: Array<String>) {
         savedStateHandle[TAGS_ARG] = tags
     }
     fun onEvent(event: MyRecipesEvent) {
@@ -64,7 +64,10 @@ class MyRecipesViewModel @Inject constructor(
                 }
             }
 
-            MyRecipesEvent.OnDone -> TODO()
+            MyRecipesEvent.OnDone -> {
+                Log.d("MyTag", "${tags.value}")
+                Log.d("MyTag", "${tags.value.size}")
+            }
         }
     }
     sealed class UIEvent {
