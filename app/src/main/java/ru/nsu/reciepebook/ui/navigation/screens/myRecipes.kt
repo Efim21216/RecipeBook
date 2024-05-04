@@ -1,6 +1,7 @@
 package ru.nsu.reciepebook.ui.navigation.screens
 
 import android.os.Bundle
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder
@@ -54,6 +55,7 @@ val StringArrayType: NavType<Array<String>?> = object: NavType<Array<String>?>(t
     }
 
     override fun parseValue(value: String): Array<String> {
+        Log.d("MyTag", value)
         return Gson().fromJson(value, Array<String>::class.java)
     }
 

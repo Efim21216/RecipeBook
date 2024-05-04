@@ -8,11 +8,9 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
-import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Text
@@ -30,7 +28,6 @@ import ru.nsu.reciepebook.R
 import ru.nsu.reciepebook.service.pad
 import ru.nsu.reciepebook.ui.components.CustomOutlinedButton
 import ru.nsu.reciepebook.ui.theme.Black500
-import ru.nsu.reciepebook.ui.theme.Green200
 import ru.nsu.reciepebook.ui.theme.Primary200
 import ru.nsu.reciepebook.ui.theme.Typography
 import kotlin.time.Duration.Companion.seconds
@@ -38,7 +35,7 @@ import kotlin.time.Duration.Companion.seconds
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChooseTimeAndKcal2(
+fun ChooseTime(
     uiState: AddRecipeStepState,
     onEvent: (AddRecipeStepEvent) -> Unit,
 ) {
@@ -65,7 +62,7 @@ fun ChooseTimeAndKcal2(
                 text = stringResource(id = R.string.time),
                 style = Typography.headlineMedium
             )
-            Spacer(Modifier.height(10.dp))
+            Spacer(Modifier.height(15.dp))
             CustomOutlinedButton(
                 onClick = { timerState.show() },
                 modifier = Modifier
@@ -87,29 +84,6 @@ fun ChooseTimeAndKcal2(
                 }
             }
         }
-        Spacer(Modifier.width(8.dp))
-        Column(
-            modifier = Modifier
-                .fillMaxHeight()
-                .weight(1f),
-            verticalArrangement = Arrangement.Bottom
-        ) {
-            Button(
-                onClick = {
 
-                },
-                modifier = Modifier.fillMaxWidth(),
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = Green200
-                ),
-            ) {
-                Text(
-                    text = stringResource(id = R.string.add_a_timer),
-                    style = Typography.bodyLarge,
-                    color = Black500,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
-        }
     }
 }

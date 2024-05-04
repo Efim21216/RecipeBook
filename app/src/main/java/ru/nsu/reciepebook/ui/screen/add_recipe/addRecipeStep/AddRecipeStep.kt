@@ -14,7 +14,6 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -30,19 +29,13 @@ import ru.nsu.reciepebook.ui.components.TopBarWithArrow
 import ru.nsu.reciepebook.ui.screen.add_recipe.AddRecipeViewModel
 import ru.nsu.reciepebook.ui.theme.Black500
 import ru.nsu.reciepebook.ui.theme.Typography
-import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import coil.compose.AsyncImage
 import ru.nsu.reciepebook.ui.components.SideBar
-import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.ChooseComplexityAndType
-import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.ChooseTimeAndKcal
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.PhotoPickerButtons
-import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.TagChip
-import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.TagsInputField
 import ru.nsu.reciepebook.ui.screen.add_recipe.addRecipeInfo.createTmpFile
 import ru.nsu.reciepebook.ui.theme.Green200
-import ru.nsu.reciepebook.ui.theme.Primary200
 
 @SuppressLint("ResourceType")
 @Composable
@@ -118,7 +111,7 @@ fun AddRecipeStep(
                         onEvent(AddRecipeStepEvent.OnChangeDescription(it))
                     })
                 Spacer(Modifier.height(20.dp))
-                ChooseTimeAndKcal2(uiState = uiState, onEvent = onEvent)
+                ChooseTime(uiState = uiState, onEvent = onEvent)
                 val singlePhotoPickerLauncher = rememberLauncherForActivityResult(
                     contract = ActivityResultContracts.PickVisualMedia(),
                 ) { uri ->
@@ -187,7 +180,7 @@ fun AddRecipeStep(
 @Composable
 fun PreviewAddRecipe() {
     AddRecipeStep(
-        uiState = AddRecipeStepState(),
+        uiState = AddRecipeStepState(steps = listOf(StepInfo())),
         onEvent = {},
         uiEvent = flow {},
         navigateUp = {},
