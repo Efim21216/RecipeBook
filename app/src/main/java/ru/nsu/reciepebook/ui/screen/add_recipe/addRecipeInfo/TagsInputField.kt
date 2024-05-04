@@ -78,7 +78,7 @@ fun TagsInputField(
             }
         )
         ExposedDropdownMenu(
-            expanded = isExpanded && isShowKeyboard,
+            expanded = isExpanded,
             onDismissRequest = { isExpanded = false }) {
 
             suggestedTags.forEach {
