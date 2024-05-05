@@ -23,6 +23,7 @@ import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
@@ -89,6 +90,26 @@ fun InteractiveCooking(
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
+                    Column(
+                        modifier = Modifier.fillMaxWidth().padding(10.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.height(5.dp))
+                        if (uiState.steps[uiState.currentStep].name != ""){
+                        Text(
+
+                            text = uiState.steps[uiState.currentStep].name,
+                            style = Typography.headlineMedium
+                        )}
+                        else{
+                            Text(
+                                text = stringResource(id = R.string.step_N) + uiState.currentStep,
+                                style = Typography.headlineMedium
+                            )
+                        }
+                        Spacer(modifier = Modifier.height(20.dp))
+
+                    }
                     if (uiState.steps[uiState.currentStep].imageUrl != null) {
                         Log.d("MyTag", "URL -- ${uiState.steps[uiState.currentStep].imageUrl}")
                         AsyncImage(
@@ -195,6 +216,6 @@ fun addAnimation(duration: Int = 600): ContentTransform {
 fun test() {
     ReciepeBookTheme {
         InteractiveCooking(CookingState(steps = listOf(StepState(1))),
-            TimerState("00", "00", "00"), 0, {},flow {}, {}, {}, {})
+            TimerState("00", "00", "00"), 1, {},flow {}, {}, {}, {})
     }
 }

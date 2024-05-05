@@ -177,25 +177,28 @@ fun RecipeInfo(
                             Constants.Measures.PIECE -> "шт"
                         }
                     }
-                    if (uiState.ingredients.isNotEmpty()) {
-                        uiState.ingredients.forEach { ingredient ->
-                            Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 4.dp),
-                                horizontalArrangement = Arrangement.SpaceBetween,
+                    uiState.ingredients.forEach { ingredient ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 4.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween,
 
-                                ) {
-                                Text(text = ingredient.name, modifier = Modifier
-                                    .fillMaxWidth(0.5f)
-                                    .padding(end = 8.dp),
-                                    maxLines = 3,
-                                    style = Typography.headlineSmall)
-                                Text(text = "${ingredient.quantity} ${items[ingredient.measure]}",
-                                    modifier = Modifier.wrapContentWidth(Alignment.End).align(Alignment.CenterVertically)
-                                    , style = Typography.headlineSmall)
-                            }
+                            ) {
+                            Text(text = "${ingredient.name}", modifier = Modifier
+                                .fillMaxWidth(0.5f)
+                                .padding(end = 8.dp),
+                                maxLines = 3,
+                                style = Typography.headlineSmall)
+                            Text(text = "${ingredient.quantity} ${items[ingredient.measure]}",
+                                modifier = Modifier.wrapContentWidth(Alignment.End).align(Alignment.CenterVertically)
+                                , style = Typography.headlineSmall)
                         }
+
+                        // Если есть дополнительное примечание к ингредиенту, отобразить его
+                        Spacer(modifier = Modifier.height(8.dp))
+                        Divider()
+                        Spacer(modifier = Modifier.height(8.dp))
                     }
                 }
             }
