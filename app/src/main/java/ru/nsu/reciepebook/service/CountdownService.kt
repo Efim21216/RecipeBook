@@ -45,6 +45,7 @@ class CountdownService: Service() {
     lateinit var notificationBuilder: NotificationCompat.Builder
     private val binder = CountdownBinder()
     private var duration: Duration = Duration.ZERO
+    private var allPeriod: Duration = Duration.ZERO
     private lateinit var timer: Timer
     private val _timerState = MutableStateFlow(TimerState())
     val timerState: StateFlow<TimerState> = _timerState.asStateFlow()
@@ -116,6 +117,7 @@ class CountdownService: Service() {
     }
     fun setTime(durationInSeconds: Int) {
         duration = durationInSeconds.seconds
+        allPeriod = durationInSeconds.seconds
         updateTimeUnitsToDuration()
     }
     private fun stopService() {
@@ -123,6 +125,7 @@ class CountdownService: Service() {
         player?.stop()
         player?.release()
         player = null
+        duration = allPeriod
         updateTimeUnitsToDuration()
         stopForegroundService()
     }

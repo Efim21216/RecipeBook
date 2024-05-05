@@ -195,6 +195,10 @@ fun RecipeInfo(
                                     modifier = Modifier.wrapContentWidth(Alignment.End).align(Alignment.CenterVertically)
                                     , style = Typography.headlineSmall)
                             }
+                            // Если есть дополнительное примечание к ингредиенту, отобразить его
+                            Spacer(modifier = Modifier.height(8.dp))
+                            Divider()
+                            Spacer(modifier = Modifier.height(8.dp))
                         }
                     }
                 }

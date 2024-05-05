@@ -93,7 +93,6 @@ fun CookingInfo(
                 Column(modifier = Modifier
                     .background(Black50,  shape = RoundedCornerShape(18.dp) )
                     .fillMaxWidth()
-
                     .padding(16.dp)) {
                     val items = Constants.Measures.entries.map {
                         when (it) {
@@ -132,6 +131,7 @@ fun CookingInfo(
                     }
                 }
                 if (uiState.numberOfSteps > 0) {
+                    Spacer(modifier = Modifier.height(15.dp))
                     Button(
                         onClick = {
                             toStep(0)

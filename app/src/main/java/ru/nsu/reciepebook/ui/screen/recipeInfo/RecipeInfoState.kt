@@ -8,7 +8,7 @@ data class Ingredient(
     val measure: Int
 )
 data class RecipeInfoState (
-    val name: String = "Nikita",
+    val name: String = "Ann",
     val imageUrl: String = "",
     val description: String = "Описание рецепта",
     val favourite: Int = 0,

@@ -32,5 +32,4 @@ fun NavGraphBuilder.homeScreen(
             }
         )
     }
-    recipeInfo(navController)
 }

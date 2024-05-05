@@ -18,7 +18,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -85,7 +87,8 @@ fun InteractiveCooking(
             Column(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(10.dp, 20.dp),
+                    .padding(10.dp, 20.dp)
+                    .verticalScroll(rememberScrollState()),
                 verticalArrangement = Arrangement.SpaceBetween
             ) {
                 Column {
@@ -106,11 +109,17 @@ fun InteractiveCooking(
                         )
                         Spacer(modifier = Modifier.height(20.dp))
                     }
-                    Text(text = uiState.steps[uiState.currentStep].text, style = Typography.bodyLarge)
+                    Text(text = uiState.steps[uiState.currentStep].name,
+                        style = Typography.headlineMedium)
+                    Spacer(modifier = Modifier.height(10.dp))
+                    Text(text = uiState.steps[uiState.currentStep].text,
+                        style = Typography.bodyLarge,
+                        modifier = Modifier.padding(10.dp, 0.dp))
                     Spacer(modifier = Modifier.height(20.dp))
                     TimerPanel(timerState = timerState, uiState.currentStep, recipeId = recipeId)
                 }
                 if (uiState.currentStep < uiState.steps.size - 1) {
+                    Spacer(modifier = Modifier.height(15.dp))
                     OutlinedButton(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -194,7 +203,7 @@ fun addAnimation(duration: Int = 600): ContentTransform {
 @Preview
 fun test() {
     ReciepeBookTheme {
-        InteractiveCooking(CookingState(steps = listOf(StepState(1))),
+        InteractiveCooking(CookingState(steps = listOf(StepState(number = 1, name = "Name", text = "Vert delicious"))),
             TimerState("00", "00", "00"), 0, {},flow {}, {}, {}, {})
     }
 }

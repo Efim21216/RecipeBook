@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.navigation.screens
 
+import android.util.Log
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavGraphBuilder

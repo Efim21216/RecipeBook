@@ -41,7 +41,7 @@ class RecipeInfoViewModel @Inject constructor(
                 is Resource.Success -> _uiState.update {_ ->
                     with (it.data!!) {
                         RecipeInfoState(name = name,
-                            author = "Efim",
+                            author = "Ann",
                             description = description,
                             ingredients = ingredients.map {dto ->
                                 Ingredient(dto.name, dto.weight, Constants.Measures.valueOf(dto.countUnit).ordinal)

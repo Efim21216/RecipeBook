@@ -16,20 +16,24 @@ fun Navigation(
     viewModel: MainViewModel
 ) {
     LaunchedEffect(key1 = true) {
-        navController.addOnDestinationChangedListener { controller, _, _ ->
-            val routes = controller.currentBackStack.value
-                .map { it.destination.route }
-                .joinToString(", ")
-            Log.d("MyTag", "BackStack: $routes")
-        }
+//        navController.addOnDestinationChangedListener { controller, _, _ ->
+//            val routes = controller.currentBackStack.value
+//                .map { it.destination.route }
+//                .joinToString(", ")
+//            Log.d("MyTag", "BackStack: $routes")
+//        }
         viewModel.navEvent.collect {
             when (it) {
                 is MainViewModel.UIEvent.Navigate -> {
-                    navController.navigate(it.to)
+                    navController.navigate(it.to) {
+                        restoreState = true
+                        launchSingleTop = true
+                    }
                 }
             }
         }
     }
+
     BottomNavigation(navController = navController) {
         NavHost(
             navController = navController,

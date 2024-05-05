@@ -1,5 +1,6 @@
 package ru.nsu.reciepebook.ui.navigation
 
+import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.navigation
